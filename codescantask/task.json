@@ -10,8 +10,58 @@
   "version": {
     "Major": 0,
     "Minor": 0,
-    "Patch": 11
+    "Patch": 22
   },
+  "inputs": [
+    {
+      "name": "dependenciesEnabled",
+      "type": "boolean",
+      "label": "Dependencies Enabled",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether dependencies are enabled."
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "label": "API Key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the API key."
+    },
+    {
+      "name": "apiUrl",
+      "type": "string",
+      "label": "API URL",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the API URL."
+    },
+    {
+      "name": "sbomEnabled",
+      "type": "boolean",
+      "label": "SBOM Enabled",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether SBOM is enabled."
+    },
+    {
+      "name": "sbomFilepath",
+      "type": "string",
+      "label": "SBOM Filepath",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the SBOM filepath."
+    },
+    {
+      "name": "sbomType",
+      "type": "string",
+      "label": "SBOM Type",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the SBOM type."
+    }
+  ],
   "execution": {
     "Node16": {
       "target": "index.js"
