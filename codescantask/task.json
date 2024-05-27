@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "47b73d03-9851-4cb1-be3d-b3a853e71d33",
+  "name": "scanoss",
+  "friendlyName": "scanoss-azure-integration",
+  "description": "scan source code",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "scanoss",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 11
+  },
+  "execution": {
+    "Node16": {
+      "target": "index.js"
+    }
+  }
+}
