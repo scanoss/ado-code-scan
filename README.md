@@ -1,9 +1,9 @@
 # SCANOSS Code Scan Task
-The SCANOSS Code Scan Action enhances your software development process by automatically scanning your code for security vulnerabilities and license compliance with configurable policies.
+The SCANOSS Code Scan task enhances your software development process by automatically scanning your code for security vulnerabilities and license compliance with configurable policies.
 
 ## Usage
 
-To begin using this action, you'll need to set up a basic Pipeline and define a task within it:
+To begin using this task, you'll need to set up a basic Pipeline and define a task within it:
 
 ```yaml
 trigger:

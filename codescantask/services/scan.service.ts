@@ -1,12 +1,11 @@
 import * as tl from 'azure-pipelines-task-lib/task';
-import path from 'path';
 import * as fs from 'fs';
 import {
     API_KEY,
     API_URL,
     DEPENDENCIES_ENABLED,
     OUTPUT_FILEPATH,
-    REPO_DIR,
+    REPO_DIR, RUNTIME_CONTAINER,
     SBOM_ENABLED,
     SBOM_FILEPATH, SBOM_TYPE
 } from '../app.input';
@@ -47,6 +46,12 @@ export interface Options {
      * Absolute path of the folder or file to scan. Required.
      */
     inputFilepath: string;
+
+    /**
+     * Runtime container to perform scan. Default [ghcr.io/scanoss/scanoss-py:v1.9.0]
+     */
+    runtimeContainer: string;
+
 }
 export class ScanService {
     private options: Options;
@@ -59,7 +64,8 @@ export class ScanService {
             sbomType: SBOM_TYPE,
             dependenciesEnabled: DEPENDENCIES_ENABLED,
             outputFilepath: OUTPUT_FILEPATH,
-            inputFilepath: REPO_DIR
+            inputFilepath: REPO_DIR,
+            runtimeContainer: RUNTIME_CONTAINER,
         };
     }
     async scan(): Promise<ScannerResults> {
@@ -90,7 +96,7 @@ export class ScanService {
     }
 
     private async buildCommand(): Promise<string> {
-       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ghcr.io/scanoss/scanoss-py:v1.9.0 scan . --output ./results.json ${this.options.dependenciesEnabled ? `--dependencies` : ''} ${await this.detectSBOM()}  ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
+       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./results.json ${this.options.dependenciesEnabled ? `--dependencies` : ''} ${await this.detectSBOM()}  ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
     }
 
     private uploadResultsToArtifacts(){
@@ -117,7 +123,7 @@ export class ScanService {
             await fs.promises.access(this.options.sbomFilepath, fs.constants.F_OK);
             return `--${this.options.sbomType} ${this.options.sbomFilepath}`;
         } catch (error:any) {
-            tl.setResult(tl.TaskResult.SucceededWithIssues, error.message);
+            tl.setResult(tl.TaskResult.Failed, error.message);
             return '';
         }
     }
