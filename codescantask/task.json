@@ -1,16 +1,16 @@
 {
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "47b73d03-9851-4cb1-be3d-b3a853e71d33",
-  "name": "scanoss",
-  "friendlyName": "scanoss-azure-integration",
+  "name": "SCANOSS",
+  "friendlyName": "SCANOSS CODE SCAN",
   "description": "scan source code",
   "helpMarkDown": "",
   "category": "Utility",
-  "author": "scanoss",
+  "author": "SCANOSS",
   "version": {
     "Major": 0,
     "Minor": 0,
-    "Patch": 24
+    "Patch": 7
   },
   "inputs": [
     {
@@ -60,6 +60,30 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Specify the SBOM type."
+    },
+    {
+      "name": "policies",
+      "type": "string",
+      "label": "policies",
+      "defaultValue": "copyleft",
+      "required": true,
+      "helpMarkDown": "Specify policies to be analyzed"
+    },
+    {
+      "name": "policiesHaltOnFailure",
+      "type": "boolean",
+      "label": "Policies Halt on Failure",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Halt check on policy failure. If set to false checks will not fail."
+    },
+    {
+      "name": "runtimeContainer",
+      "type": "string",
+      "label": "Runtime container",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.9.0",
+      "required": false,
+      "helpMarkDown": "Specify runtime container to perform the scan"
     }
   ],
   "execution": {
