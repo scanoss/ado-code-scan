@@ -28,13 +28,14 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
 
         // get declared components
         try {
-            if(!SBOM_FILEPATH) throw new Error("SBOM File path not found");
-            const sbom = await parseSBOM(SBOM_FILEPATH);
+            const sbomFilePath  = tl.getInput('sbomFilepath');
+            if(!sbomFilePath) throw new Error("SBOM File path not found");
+            const sbom = await parseSBOM(sbomFilePath);
             declaredComponents = sbom.components || [];
         } catch (e: unknown) {
             if (e instanceof Error) {
                 tl.error(e.message);
-                tl.warning(`Warning on policy check: ${this.checkName}. SBOM file could not be parsed (${SBOM_FILEPATH})`);
+                tl.warning(`Warning on policy check: ${this.checkName}. SBOM file could not be parsed`);
             }
         }
 

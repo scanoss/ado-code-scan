@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsc && mocha ./tests/*.test.js",
     "build": "tsc"
   },
   "keywords": [],
@@ -12,12 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.2",
-    "azure-pipelines-task-lib": "^4.12.1"
+    "azure-pipelines-task-lib": "^4.12.1",
+    "sinon": "^18.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.12.12",
     "@types/q": "^1.5.8",
+    "@types/sinon": "^17.0.3",
     "sync-request": "^6.1.0"
   }
 }

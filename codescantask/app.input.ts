@@ -11,6 +11,3 @@ export const SBOM_FILEPATH = tl.getInput('sbomFilepath');
 export const SBOM_TYPE = tl.getInput('sbomType');
 export const POLICIES_HALT_ON_FAILURE = tl.getInput('policiesHaltOnFailure') === 'true';
 export const RUNTIME_CONTAINER = tl.getInput('runtimeContainer') || "ghcr.io/scanoss/scanoss-py:v1.9.0";
-
-//TODO: Add RUNTIME CONTAINER / SCAN CONTAINER / Default latest
-//SCAN CONTAINER
