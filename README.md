@@ -30,43 +30,8 @@ This guide provides step-by-step instructions for deploying a new package for yo
 - **jq**: Install `jq` for JSON processing.
 
 ## Build the App
+Before creating a new package, ensure to update the version in the package.json file. Then, run the following command to build the app:
 
-Before deploying a new package, build the application to ensure that all changes are compiled.
-
-1. Navigate to the `codescantask` directory.
-2. Run the build script.
-
-    ```bash
-    cd codescantask && npm run build
-    ```
-
-## Update Version
-
-Before creating a new package, update the version in the `task.json` file. This version will then be synchronized with `package.json` and `vss-extension.json` using the provided script.
-
-1. Update the `version` field in `task.json`:
-
-    ```
-    "version" {
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0
-    }
-    ```
-
-2. Run the version synchronization script:
-
-    ```bash
-    ./version.sh
-    ```
-
-## Create the Package
-
-Create a new package using the updated `vss-extension.json` file.
-
-1. Ensure you are in the root directory of your project.
-2. Run the following command to create the package:
-
-    ```bash
-    tfx extension create --manifest-globs vss-extension.json
-    ```
+``` bash
+make build
+```
