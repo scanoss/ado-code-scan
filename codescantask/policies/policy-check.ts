@@ -40,7 +40,10 @@ export abstract class PolicyCheck {
         let status = tl.TaskResult.SucceededWithIssues;
         if (POLICIES_HALT_ON_FAILURE)  status = tl.TaskResult.Failed;
         tl.setResult(status, `[${this.checkName}], SUMMARY: ${summary}, DETAILS: ${text? text: ''} `);
-        await this.updatePRStatus(PR_STATUS.failed, `SCANOSS Policy Check: ${this.checkName}`)
+        await this.updatePRStatus(PR_STATUS.failed, `SCANOSS Policy Check: ${this.checkName}`);
+        if(text) {
+            await this.addCommentToPR(`${this.checkName} Check Results`, text);
+        }
     }
 
     protected async updatePRStatus(state: PR_STATUS, description: string){
@@ -68,6 +71,31 @@ export abstract class PolicyCheck {
             });
         } catch (err:any) {
             tl.setResult(tl.TaskResult.SucceededWithIssues, `Failed to add status to PR: ${err.message}`);
+             await this.updatePRStatus(PR_STATUS.failed, '');
+        }
+    }
+
+    private async addCommentToPR(title: string, content: string) {
+        try {
+            const apiUrl =`${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads?api-version=6.0`;
+
+            const payload = {
+                comments: [{
+                    parentCommentId: 0,
+                    content: `## ${title}\n${content}`
+                }]
+            };
+
+            const response = await axios.post(apiUrl, payload, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.accessToken}`
+                }
+            });
+
+            tl.debug(`Comment added successfully: ${response.data}`);
+        } catch (error: any) {
+            tl.error('Failed to add comment:', error.response.data);
         }
     }
 
