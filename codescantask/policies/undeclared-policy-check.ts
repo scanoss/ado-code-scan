@@ -2,7 +2,7 @@ import { generateTable } from '../utils/markdown.utils';
 import { Component, getComponents } from '../services/result.service';
 import { PolicyCheck } from './policy-check';
 import { parseSBOM } from '../utils/sbom.utils';
-import { SBOM_FILEPATH } from '../app.input';
+import { REPO_DIR, SBOM_FILEPATH } from '../app.input';
 import { ScannerResults } from '../services/result.interface';
 import * as tl from 'azure-pipelines-task-lib';
 
@@ -19,6 +19,7 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
     }
 
     async run(scannerResults: ScannerResults): Promise<void> {
+        await this.start();
 
         const nonDeclaredComponents: Component[] = [];
         let declaredComponents: Partial<Component>[] = [];
@@ -27,10 +28,14 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
 
         // get declared components
         try {
-            const sbom = await parseSBOM(`${tl.getVariable('Build.Repository.LocalPath')}${SBOM_FILEPATH}`);
+            if(!SBOM_FILEPATH) throw new Error("SBOM File path not found");
+            const sbom = await parseSBOM(SBOM_FILEPATH);
             declaredComponents = sbom.components || [];
-        } catch (e) {
-            tl.warning(`Warning on policy check: ${this.checkName}. SBOM file could not be parsed (${SBOM_FILEPATH})`);
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                tl.error(e.message);
+                tl.warning(`Warning on policy check: ${this.checkName}. SBOM file could not be parsed (${SBOM_FILEPATH})`);
+            }
         }
 
         comps.forEach(c => {
@@ -43,9 +48,9 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
         const details = this.getDetails(nonDeclaredComponents);
 
         if (nonDeclaredComponents.length === 0) {
-            return this.success(summary, details);
+            await this.success(summary, details);
         } else {
-            return this.reject(summary, details);
+            await this.reject(summary, details);
         }
     }
 

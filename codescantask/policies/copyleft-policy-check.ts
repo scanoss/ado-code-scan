@@ -14,6 +14,7 @@ export class CopyleftPolicyCheck extends PolicyCheck {
     }
 
     async run(scannerResults: ScannerResults): Promise<void> {
+        await this.start();
         const components = getComponents(scannerResults);
 
         // Filter copyleft components
@@ -25,9 +26,9 @@ export class CopyleftPolicyCheck extends PolicyCheck {
         const details = this.getDetails(componentsWithCopyleft);
 
         if (componentsWithCopyleft.length === 0) {
-            return this.success(summary, details);
+            await this.success(summary, details);
         } else {
-            return this.reject(summary, details);
+            await this.reject(summary, details);
         }
     }
 
