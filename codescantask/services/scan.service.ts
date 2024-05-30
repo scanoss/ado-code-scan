@@ -10,6 +10,7 @@ import {
     SBOM_FILEPATH, SBOM_TYPE
 } from '../app.input';
 import { ScannerResults } from './result.interface';
+import path from 'path';
 export interface Options {
     /**
      * Whether SBOM ingestion is enabled. Optional.
@@ -63,7 +64,7 @@ export class ScanService {
             sbomFilepath: SBOM_FILEPATH,
             sbomType: SBOM_TYPE,
             dependenciesEnabled: DEPENDENCIES_ENABLED,
-            outputFilepath: OUTPUT_FILEPATH,
+            outputFilepath: path.join(tl.getVariable('Build.Repository.LocalPath') || '' , OUTPUT_FILEPATH),
             inputFilepath: REPO_DIR,
             runtimeContainer: RUNTIME_CONTAINER,
         };
@@ -96,7 +97,7 @@ export class ScanService {
     }
 
     private async buildCommand(): Promise<string> {
-       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./results.json ${this.options.dependenciesEnabled ? `--dependencies` : ''} ${await this.detectSBOM()}  ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
+       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./${OUTPUT_FILEPATH} ${this.options.dependenciesEnabled ? `--dependencies` : ''} ${await this.detectSBOM()}  ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
     }
 
     private uploadResultsToArtifacts(){

@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 0,
-    "Patch": 15
+    "Patch": 16
   },
   "inputs": [
     {
@@ -67,7 +67,7 @@
       "label": "policies",
       "defaultValue": "copyleft",
       "required": true,
-      "helpMarkDown": "Specify policies to be analyzed"
+      "helpMarkDown": "Specify policies to be analyzed."
     },
     {
       "name": "policiesHaltOnFailure",
@@ -83,7 +83,15 @@
       "label": "Runtime container",
       "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.9.0",
       "required": false,
-      "helpMarkDown": "Specify runtime container to perform the scan"
+      "helpMarkDown": "Specify runtime container to perform the scan."
+    },
+    {
+      "name": "outputFilepath",
+      "type": "string",
+      "label": "Output File Path",
+      "defaultValue": "results.json",
+      "required": false,
+      "helpMarkDown": "Scan output file name."
     }
   ],
   "execution": {
