@@ -1,10 +1,10 @@
 name: Build and Release
 
 on:
+  workflow_dispatch:
   push:
-    branches-ignore:
-      - '*'
-  workflow_dispatch: # Manual trigger
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -14,17 +14,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
       - name: Install tfx-cli
         run: npm install -g tfx-cli
 
       - name: Build project
         run: make build
 
-      - name: Upload .vsix file
-        uses: actions/upload-artifact@v2
+      - name: Create Draft Release
+        if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+        uses: softprops/action-gh-release@v1
         with:
-          name: vsix-artifact
-          path: ./*.vsix
+          draft: true
+          title: Release ${{ github.ref_name }}
+          files: ./*.vsix
