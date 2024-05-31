@@ -2,7 +2,13 @@
 The SCANOSS Code Scan task enhances your software development process by automatically scanning your code for security vulnerabilities and license compliance with configurable policies.
 
 ## Usage
+Before using the SCANOSS Code Scan Task, you need to install it from the Azure Marketplace. You can find it [here](INSERT_LINK_TO_AZURE_MARKETPLACE_DEV_OPS).
 
+### Set Up
+
+Ensure you have the correct permissions set up on your repository. The SCANOSS Code Scan Task uses the Azure API to create comments on Pull Requests and Checks.
+
+### Pipeline
 To begin using this task, you'll need to set up a basic Pipeline and define a task within it:
 
 ```yaml
@@ -62,24 +68,23 @@ Additionally, if it is a Pull Request, a comment with a summary of the report wi
 
 ![Comments on PR Copyleft licenses](./.github/assets/pr_comment_copyleft.png)
 
-
-# Deployment Guide
+# Development Guide
 
 This guide provides step-by-step instructions for deploying a new package for your project. Ensure all steps are followed to maintain version consistency and successful deployment.
 
-## Prerequisites
+### Prerequisites
 
 - **Node.js**: Ensure Node.js and npm are installed.
 - **Azure DevOps Extension Tool (tfx)**: Install the TFS cross-platform command-line interface (`tfx`).
 - **jq**: Install `jq` for JSON processing.
 
-## Tests 
+### Tests
 Before building the app, run test suites.
 ``` bash
 make test
 ```
 
-## Build the App
+### Build the App
 Before creating a new package, ensure to update the version in the **package.json** file. Then, run the following command to build the app:
 
 ``` bash
