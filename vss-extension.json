@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "id": "scanoss-code-scan",
-  "name": "SCANOSS",
-  "version": "0.0.16",
+  "name": "SCANOSS Code Scan",
+  "version": "0.0.18",
   "publisher": "SCANOSS",
   "targets": [
     {
@@ -21,6 +21,19 @@
       "path": "codescantask"
     }
   ],
+  "content": {
+    "details": {
+      "path": "OVERVIEW.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "links": {
+    "repository": {
+      "uri": "https://github.com/scanoss/ado-code-scan"
+    }
+  },
   "contributions": [
     {
       "id": "custom-build-release-task",
