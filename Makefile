@@ -1,8 +1,12 @@
-.PHONY: build test
+.PHONY: build test upgrade_version package
+
+upgrade_version:
+	./tools/version.sh
 
 build:
 	cd codescantask && npm install && npm run build
-	./build/version.sh
+
+package:build
 	tfx extension create --manifest-globs vss-extension.json
 
 test:

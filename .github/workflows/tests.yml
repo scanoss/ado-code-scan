@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install tfx-cli
+        run: npm install -g tfx-cli
+
+      - name: Build
+        run: make build
+
+      - name: Tests
+        run: make test
+

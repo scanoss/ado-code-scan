@@ -17,8 +17,8 @@ jobs:
       - name: Install tfx-cli
         run: npm install -g tfx-cli
 
-      - name: Build project
-        run: make build
+      - name: Package
+        run: make package
 
       - name: Create Draft Release
         if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')

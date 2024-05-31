@@ -1,4 +1,4 @@
-# Azure DevOps Code Scan Task
+# SCANOSS Code Scan Task
 The SCANOSS Code Scan task enhances your software development process by automatically scanning your code for security vulnerabilities and license compliance with configurable policies.
 
 ## Usage
@@ -60,44 +60,10 @@ The SCANOSS Code Scan Task includes two configurable policies:
 
 In this scenario, a classic policy is executed that will fail if copyleft licenses are found within the results:
 
-![Azure DevOps Checks](./.github/assets/checks.png)
+![Azure DevOps Checks](https://github.com/scanoss/integration-azure-DevOps/blob/1637ab09e9f4834a419a5277f563b4035cf98d35/.github/assets/pr_comment_undeclared_components.png?raw=true)
 
 Additionally, if it is a Pull Request, a comment with a summary of the report will be automatically generated.
 
-![Comments on PR Undeclared Components](./.github/assets/pr_comment_undeclared_components.png)
+![Comments on PR Undeclared Components](https://github.com/scanoss/integration-azure-DevOps/blob/1637ab09e9f4834a419a5277f563b4035cf98d35/.github/assets/pr_comment_undeclared_components.png?raw=true)
 
-![Comments on PR Copyleft licenses](./.github/assets/pr_comment_copyleft.png)
-
-# Development Guide
-
-This guide provides step-by-step instructions for deploying a new package for your project. Ensure all steps are followed to maintain version consistency and successful deployment.
-
-### Prerequisites
-
-- **Node.js**: Ensure Node.js and npm are installed.
-- **Azure DevOps Extension Tool (tfx)**: Install the TFS cross-platform command-line interface (`tfx`).
-- **jq**: Install `jq` for JSON processing.
-
-### Tests
-Before building the app, run test suites.
-``` bash
-make test
-```
-
-### Upgrade App version
-
-A script file is provided to simply the app versioning process.
-
-1. Ensure to update the version in the **package.json** file.
-
-2. Then, run the following command to build the app:
-``` bash
-make upgrade_version
-```
-
-### Build the App
-Run the following command to build the app:
-
-``` bash
-make build
-```
+![Comments on PR Copyleft licenses](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/pr_comment_copyleft.png?raw=true)
