@@ -20,6 +20,14 @@ jobs:
       - name: Package
         run: make package
 
+      - name: Publish to Azure DevOps Marketplace
+        if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+        env:
+          MSFT_PERSONAL_ACCESS_TOKEN: ${{ secrets.SC_MSFT_PUBLISH_TOKEN }}
+          PUBLISHER_ID: ${{ vars.PUBLISHER_ID }}
+        run: |
+          tfx extension publish --manifest-globs vss-extension.json --publisher $PUBLISHER_ID --token $MSFT_PERSONAL_ACCESS_TOKEN
+
       - name: Create Draft Release
         if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
         uses: softprops/action-gh-release@v1
