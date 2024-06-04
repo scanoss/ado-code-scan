@@ -76,5 +76,5 @@ if [[ "$version" == "$semver_code_scan_task" ]] ; then
   echo "Latest tag and SCANOSS Code Scan Task version are the same: $version" >&2
   exit 1
 fi
-echo "$semver_code_scan_tasks"
+echo "$semver_code_scan_task"
 exit 0
