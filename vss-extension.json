@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "scanoss-code-scan",
   "name": "SCANOSS Code Scan",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "publisher": "SCANOSS",
   "targets": [
     {
@@ -29,9 +29,16 @@
       "path": "LICENSE"
     }
   },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/scanoss/ado-code-scan"
+  },
   "links": {
-    "repository": {
+    "home": {
       "uri": "https://github.com/scanoss/ado-code-scan"
+    },
+    "support": {
+      "uri": "https://github.com/scanoss/ado-code-scan/issues"
     }
   },
   "contributions": [
