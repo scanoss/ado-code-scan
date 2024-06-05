@@ -15,7 +15,7 @@ To begin using this task, you'll need to set up a basic Pipeline and define a ta
 trigger: none
 
 pr:
-  - master
+  - main
 
 pool:
   vmImage: ubuntu-latest
@@ -33,6 +33,9 @@ steps:
       policies: copyleft,undeclared
       policiesHaltOnFailure: false
 ```
+
+**NOTE**:  
+Minor versions can be set by specifying the full version number of a task after the @ sign (example: scanoss@0.1.1). For further details, please refer to the [task version](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/tasks?view=azure-devops&tabs=yaml#task-versions).
 
 ### Action Input Parameters
 
