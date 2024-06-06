@@ -6,7 +6,27 @@ Before using the SCANOSS Code Scan Task, you need to install it from the Azure M
 
 ### Set Up
 
-Ensure you have the correct permissions set up on your repository. The SCANOSS Code Scan Task uses the Azure API to create comments on Pull Requests and Checks.
+The SCANOSS Code Scan Task uses the Azure API to create Checks and Comments on Pull Requests. Once the pipeline is available upstream, ensure you have the correct permissions set up on your repository: 
+
+Open the repository settings section:
+  1. Project Settings
+  2. Repositories
+  3. Select the repository
+
+A) Allow Pull Request Contribute Access:
+  1. Open the 'Security' tab.
+  2. Select the repository Build Service account under the 'Users' group.
+  3. Allow "Contribute to pull requests".
+
+B) Add Build Validation Policy to the integration branch:
+  1. Open the 'Policies' tab.
+  2. Select the integration branch under 'Branch Policies'.
+  3. Add a new Build Validation Policy, configure the options, and save:
+      1. Build Pipeline: Select your pipeline.
+      2. Trigger: Automatic.
+      3. Policy Requirement: Select your option.
+      4. Build Expiration: Select your option.
+      5. Set a display name.
 
 ### Pipeline
 To begin using this task, you'll need to set up a basic Pipeline and define a task within it:
