@@ -2,7 +2,7 @@
 The SCANOSS Code Scan task enhances your software development process by automatically scanning your code for security vulnerabilities and license compliance with configurable policies.
 
 ## Usage
-Before using the SCANOSS Code Scan Task, you need to install it from the Azure Marketplace. You can find it [here](INSERT_LINK_TO_AZURE_MARKETPLACE_DEV_OPS).
+Before using the SCANOSS Code Scan Task, you need to install it from the Azure Marketplace. You can find it [here](https://marketplace.visualstudio.com/items?itemName=SCANOSS.scanoss-code-scan).
 
 ### Set Up
 
