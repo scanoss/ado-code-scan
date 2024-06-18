@@ -9,6 +9,7 @@ To install the SCANOSS Code Scan task, please consult the Visual Studio Marketpl
 ### Detailed Information
 For more detailed usage instructions, please refer to the [OVERVIEW.md](OVERVIEW.md) document.
 
+
 # Development Guide
 
 This guide provides step-by-step instructions for deploying a new package for your project. Ensure all steps are followed to maintain version consistency and successful deployment.
@@ -51,3 +52,5 @@ Run the following command to build the app:
 ``` bash
 make build
 ```
+
+
