@@ -11,7 +11,7 @@ build:install
 	cd codescantask && npm run build
 
 package:build
-	tfx extension create --manifest-globs vss-extension.json
+	tfx extension create --manifest-globs vss-extension.json vss
 
 test:
 	cd codescantask && npm run test

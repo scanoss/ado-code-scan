@@ -26,7 +26,7 @@ jobs:
           MSFT_PERSONAL_ACCESS_TOKEN: ${{ secrets.SC_MSFT_PUBLISH_TOKEN }}
           PUBLISHER_ID: ${{ vars.PUBLISHER_ID }}
         run: |
-          tfx extension publish --manifest-globs vss-extension.json --publisher $PUBLISHER_ID --token $MSFT_PERSONAL_ACCESS_TOKEN
+          tfx extension publish --manifest-globs vss-extension.json vss-extension-release.json --publisher $PUBLISHER_ID --token $MSFT_PERSONAL_ACCESS_TOKEN
 
       - name: Create Draft Release
         if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
