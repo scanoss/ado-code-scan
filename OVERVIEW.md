@@ -90,3 +90,7 @@ Additionally, if it is a Pull Request, a comment with a summary of the report wi
 ![Comments on PR Undeclared Components](https://github.com/scanoss/integration-azure-DevOps/blob/1637ab09e9f4834a419a5277f563b4035cf98d35/.github/assets/pr_comment_undeclared_components.png?raw=true)
 
 ![Comments on PR Copyleft licenses](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/pr_comment_copyleft.png?raw=true)
+
+
+## Example Repository
+An example use case can be found at the following [link](https://dev.azure.com/scanoss/scanoss-ado-integration-demo).
