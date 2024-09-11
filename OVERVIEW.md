@@ -28,7 +28,7 @@ B) Add Build Validation Policy to the integration branch:
       4. Build Expiration: Select your option.
       5. Set a display name.
 
-### Pipeline
+## Pipeline
 To begin using this task, you'll need to set up a basic Pipeline and define a task within it:
 
 ```yaml
@@ -39,6 +39,10 @@ pr:
 
 pool:
   vmImage: ubuntu-latest
+  
+variables:
+  HTTP_PROXY: $(HTTP_PROXY_URL)
+  HTTPS_PROXY: $(HTTPS_PROXY_URL)   
 
 steps:
   - checkout: self
@@ -57,19 +61,25 @@ steps:
 **NOTE**:  
 Minor versions can be set by specifying the full version number of a task after the @ sign (example: scanoss@0.1.1). For further details, please refer to the [task version](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/tasks?view=azure-devops&tabs=yaml#task-versions).
 
+### Proxy Settings
+If a proxy is required for internet access in your environment, the ***HTTP_PROXY*** and ***HTTPS_PROXY*** variables can be set in the pipeline to the appropriate proxy URLs. This will ensure that all network requests made during the pipeline execution are routed through the specified proxies.
+
+
 ### Action Input Parameters
 
-| **Parameter**         | **Description**                                                                    | **Required** | **Default**                             | 
-|-----------------------|------------------------------------------------------------------------------------|--------------|-----------------------------------------|
-| outputFilepath        | Scan output file name.                                                             | Optional     | `results.json`                          |
-| sbomEnabled           | Enable or disable scanning based on the SBOM file                                  | Optional     | `true`                                  |
-| sbomFilepath          | Filepath of the SBOM file to be used for scanning                                  | Optional     | `sbom.json`                             |
-| sbomType              | Type of SBOM operation: either 'identify' or 'ignore                               | Optional     | `identify`                              |
-| dependenciesEnabled   | Option to enable or disable scanning of dependencies.                              | Optional     | `false`                                 |
-| policies              | List of policies separated by commas, options available are: copyleft, undeclared. | Optional     | -                                       |
-| policiesHaltOnFailure | Halt check on policy failure. If set to false checks will not fail.                | Optional     | `true`                                  |
-| apiUrl                | SCANOSS API URL                                                                    | Optional     | `https://api.osskb.org/scan/direct` |
-| apiKey                | SCANOSS API Key                                                                    | Optional     | -                                       |
+| **Parameter**  | **Description**                                                                    | **Required** | **Default**                            | 
+|----------------|------------------------------------------------------------------------------------|--------------|----------------------------------------|
+| outputFilepath | Scan output file name.                                                             | Optional     | `results.json`                         |
+| sbomEnabled    | Enable or disable scanning based on the SBOM file                                  | Optional     | `true`                                 |
+| sbomFilepath   | Filepath of the SBOM file to be used for scanning                                  | Optional     | `sbom.json`                            |
+| sbomType       | Type of SBOM operation: either 'identify' or 'ignore                               | Optional     | `identify`                             |
+| dependenciesEnabled | Option to enable or disable scanning of dependencies.                              | Optional     | `false`                                |
+| policies       | List of policies separated by commas, options available are: copyleft, undeclared. | Optional     | -                                      |
+| policiesHaltOnFailure | Halt check on policy failure. If set to false checks will not fail.                | Optional     | `true`                                 |
+| apiUrl         | SCANOSS API URL                                                                    | Optional     | `https://api.osskb.org/scan/direct` |
+| apiKey         | SCANOSS API Key                                                                    | Optional     | -                                      |
+| runtimeContainer               | Runtime URL                                                                        | Optional     | `ghcr.io/scanoss/scanoss-py:v1.9.0`                                     |
+
 
 
 ## Policy Checks
