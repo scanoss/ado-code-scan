@@ -84,7 +84,6 @@ If a proxy is required for internet access in your environment, the ***HTTP_PROX
 | licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.          | Optional     | -                                   |
 
 
-
 ## Policy Checks
 The SCANOSS Code Scan Task includes two configurable policies:
 
@@ -96,9 +95,16 @@ The SCANOSS Code Scan Task includes two configurable policies:
 
 Additionally, if it is a Pull Request, a comment with a summary of the report will be automatically generated.
 
-![Comments on PR Undeclared Components](https://github.com/scanoss/integration-azure-DevOps/blob/1637ab09e9f4834a419a5277f563b4035cf98d35/.github/assets/pr_comment_undeclared_components.png?raw=true)
+![Comments on PR Undeclared Components](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/pr_comment_undeclared_components.png?raw=true)
+
 
 ![Comments on PR Copyleft licenses](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/pr_comment_copyleft.png?raw=true)
+
+
+## Artifacts
+The scan results and policy check outcomes are uploaded to the artifacts folder of the specific run of the pipeline.
+
+![Artifacts](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/results_artifact.png?raw=true)
 
 
 ## Example Repository

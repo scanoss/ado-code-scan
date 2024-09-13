@@ -25,6 +25,8 @@ import * as tl from 'azure-pipelines-task-lib';
 import { ScannerResults } from '../services/result.interface';
 import { POLICIES_HALT_ON_FAILURE } from '../app.input';
 import axios from 'axios';
+import path from 'path';
+import fs from 'fs';
 
 export enum PR_STATUS {
     succeeded = 'succeeded',
@@ -122,5 +124,17 @@ export abstract class PolicyCheck {
         }
     }
 
+    protected async uploadArtifact(name: string, content: string) {
+
+    const artifactName = `scanoss`;
+    // Create a temporary directory and file path
+    const tempDir = tl.getVariable('Agent.TempDirectory') || '.';
+    const tempFilePath = path.join(tempDir, name);
+
+    // Write the in-memory content to the temporary file
+    await fs.promises.writeFile(tempFilePath, content);
+
+    tl.command('artifact.upload', { artifactname: artifactName }, tempFilePath);
+    }
  
 }

@@ -33,6 +33,7 @@ import { licenseUtil } from '../utils/license.utils';
  * It then generates a summary and detailed report of the findings.
  */
 export class CopyleftPolicyCheck extends PolicyCheck {
+    private policyCheckResultName = 'policy-check-copyleft-results.md'
     constructor() {
         super(`Copyleft Policy`);
     }
@@ -50,6 +51,10 @@ export class CopyleftPolicyCheck extends PolicyCheck {
 
         const summary = this.getSummary(componentsWithCopyleft);
         const details = this.getDetails(componentsWithCopyleft);
+
+        if (details) {
+            await this.uploadArtifact(this.policyCheckResultName, details);
+        }
 
         if (componentsWithCopyleft.length === 0) {
             await this.success(summary, details);

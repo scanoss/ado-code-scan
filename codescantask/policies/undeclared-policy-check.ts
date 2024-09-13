@@ -37,6 +37,7 @@ import * as tl from 'azure-pipelines-task-lib';
  *
  */
 export class UndeclaredPolicyCheck extends PolicyCheck {
+    private policyCheckResultName = 'policy-check-undeclared-results.md';
     constructor() {
         super(`Undeclared Policy`);
     }
@@ -70,6 +71,10 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
 
         const summary = this.getSummary(nonDeclaredComponents);
         const details = this.getDetails(nonDeclaredComponents);
+
+        if (details) {
+            await this.uploadArtifact(this.policyCheckResultName, details);
+        }
 
         if (nonDeclaredComponents.length === 0) {
             await this.success(summary, details);
