@@ -57,7 +57,7 @@
       "name": "sbomType",
       "type": "string",
       "label": "SBOM Type",
-      "defaultValue": "",
+      "defaultValue": "identify",
       "required": false,
       "helpMarkDown": "Specify the SBOM type."
     },

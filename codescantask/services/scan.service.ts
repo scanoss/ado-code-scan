@@ -145,7 +145,7 @@ export class ScanService {
 
         try {
             await fs.promises.access(this.options.sbomFilepath, fs.constants.F_OK);
-            return `--${this.options.sbomType} ${this.options.sbomFilepath}`;
+            return `--${this.options.sbomType?.toLowerCase()} ${this.options.sbomFilepath}`;
         } catch (error:any) {
             tl.setResult(tl.TaskResult.Failed, error.message);
             return '';
