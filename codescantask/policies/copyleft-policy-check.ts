@@ -65,15 +65,16 @@ export class CopyleftPolicyCheck extends PolicyCheck {
         if (components.length === 0) return undefined;
 
         const headers = ['Component', 'Version', 'License', 'URL', 'Copyleft'];
+        const centeredColumns = [1, 4];
         const rows: string[][] = [];
 
         components.forEach(component => {
             component.licenses.forEach(license => {
-                const copyleftIcon = license.copyleft ? ':x:' : ' ';
+                const copyleftIcon = license.copyleft ? 'YES' : 'NO';
                 rows.push([component.purl, component.version, license.spdxid, `${license.url || ''}`, copyleftIcon]);
             });
         });
 
-        return generateTable(headers, rows);
+        return generateTable(headers, rows, centeredColumns);
     }
 }

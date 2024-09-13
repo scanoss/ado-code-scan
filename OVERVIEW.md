@@ -88,12 +88,8 @@ The SCANOSS Code Scan Task includes two configurable policies:
 1. Copyleft: This policy checks if any component or code snippet is associated with a copyleft license. If such a
    license is detected, the pull request (PR) is rejected.
 
-2. Undeclared: This policy compares the components detected in the repository against those declared in an sbom.json
+2. Undeclared: This policy compares the components detected in the repository against those declared in the sbom.json
    file (customizable through the sbom.filepath parameter). If there are undeclared components, the PR is rejected.
-
-In this scenario, a classic policy is executed that will fail if copyleft licenses are found within the results:
-
-![Azure DevOps Checks](https://github.com/scanoss/integration-azure-DevOps/blob/1637ab09e9f4834a419a5277f563b4035cf98d35/.github/assets/pr_comment_undeclared_components.png?raw=true)
 
 Additionally, if it is a Pull Request, a comment with a summary of the report will be automatically generated.
 

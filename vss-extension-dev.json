@@ -1,0 +1,57 @@
+{
+  "manifestVersion": 1,
+  "id": "scanoss-code-scan-dev",
+  "name": "SCANOSS Code Scan DEV",
+  "version": "0.1.3",
+  "publisher": "SCANOSS",
+  "public": false,
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "The SCANOSS Code Scan task enhances your software development process by automatically scanning your code for security vulnerabilities and license compliance with configurable policies.",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "icons": {
+    "default": "images/scanoss.png"
+  },
+  "files": [
+    {
+      "path": "codescantask"
+    }
+  ],
+  "content": {
+    "details": {
+      "path": "OVERVIEW.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/scanoss/ado-code-scan"
+  },
+  "links": {
+    "home": {
+      "uri": "https://github.com/scanoss/ado-code-scan"
+    },
+    "support": {
+      "uri": "https://github.com/scanoss/ado-code-scan/issues"
+    }
+  },
+  "contributions": [
+    {
+      "id": "custom-build-release-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "codescantask"
+      }
+    }
+  ]
+}

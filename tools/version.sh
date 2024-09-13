@@ -11,7 +11,15 @@ export dir=$(dirname "$0")
 # Path to your files
 TASK_JSON="${dir}/../codescantask/task.json"
 PACKAGE_JSON="${dir}/../codescantask/package.json"
-VSS_EXTENSION_JSON="${dir}/../vss-extension.json"
+
+if [ "$1" == "dev" ]; then
+    # Use the dev version of the VSS_EXTENSION_JSON file
+    VSS_EXTENSION_JSON="${dir}/../vss-extension-dev.json"
+else
+    # Use the default VSS_EXTENSION_JSON file
+    VSS_EXTENSION_JSON="${dir}/../vss-extension.json"
+fi
+
 
 # Extract the version from package.json
 VERSION=$(jq -r '.version' "$PACKAGE_JSON")
