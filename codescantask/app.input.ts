@@ -23,6 +23,9 @@
 
 import tl = require('azure-pipelines-task-lib/task');
 export const DEPENDENCIES_ENABLED = tl.getInput('dependenciesEnabled') === 'true';
+export const COPYLEFT_LICENSE_INCLUDE = tl.getInput('LicensesCopyleftInclude');
+export const COPYLEFT_LICENSE_EXCLUDE = tl.getInput('LicensesCopyleftExclude');
+export const COPYLEFT_LICENSE_EXPLICIT = tl.getInput('LicensesCopyleftExplicit');
 export const API_KEY = tl.getInput('apiKey');
 export const API_URL = tl.getInput('apiUrl');
 export const OUTPUT_FILEPATH = tl.getInput('outputFilepath') || "results.json";

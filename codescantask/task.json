@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 3
+    "Patch": 5
   },
   "inputs": [
     {
@@ -92,6 +92,30 @@
       "defaultValue": "results.json",
       "required": false,
       "helpMarkDown": "Scan output file name."
+    },
+    {
+      "name": "licensesCopyleftInclude",
+      "type": "string",
+      "label": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list."
+    },
+    {
+      "name": "licensesCopyleftExclude",
+      "type": "string",
+      "label": "List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list."
+    },
+    {
+      "name": "licensesCopyleftExplicit",
+      "type": "string",
+      "label": "Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list."
     }
   ],
   "execution": {

@@ -67,18 +67,21 @@ If a proxy is required for internet access in your environment, the ***HTTP_PROX
 
 ### Action Input Parameters
 
-| **Parameter**  | **Description**                                                                    | **Required** | **Default**                            | 
-|----------------|------------------------------------------------------------------------------------|--------------|----------------------------------------|
-| outputFilepath | Scan output file name.                                                             | Optional     | `results.json`                         |
-| sbomEnabled    | Enable or disable scanning based on the SBOM file                                  | Optional     | `true`                                 |
-| sbomFilepath   | Filepath of the SBOM file to be used for scanning                                  | Optional     | `sbom.json`                            |
-| sbomType       | Type of SBOM operation: either 'identify' or 'ignore                               | Optional     | `identify`                             |
-| dependenciesEnabled | Option to enable or disable scanning of dependencies.                              | Optional     | `false`                                |
-| policies       | List of policies separated by commas, options available are: copyleft, undeclared. | Optional     | -                                      |
-| policiesHaltOnFailure | Halt check on policy failure. If set to false checks will not fail.                | Optional     | `true`                                 |
-| apiUrl         | SCANOSS API URL                                                                    | Optional     | `https://api.osskb.org/scan/direct` |
-| apiKey         | SCANOSS API Key                                                                    | Optional     | -                                      |
-| runtimeContainer               | Runtime URL                                                                        | Optional     | `ghcr.io/scanoss/scanoss-py:v1.9.0`                                     |
+| **Parameter**            | **Description**                                                                    | **Required** | **Default**                         | 
+|--------------------------|------------------------------------------------------------------------------------|--------------|-------------------------------------|
+| outputFilepath           | Scan output file name.                                                             | Optional     | `results.json`                      |
+| sbomEnabled              | Enable or disable scanning based on the SBOM file                                  | Optional     | `true`                              |
+| sbomFilepath             | Filepath of the SBOM file to be used for scanning                                  | Optional     | `sbom.json`                         |
+| sbomType                 | Type of SBOM operation: either 'identify' or 'ignore                               | Optional     | `identify`                          |
+| dependenciesEnabled      | Option to enable or disable scanning of dependencies.                              | Optional     | `false`                             |
+| policies                 | List of policies separated by commas, options available are: copyleft, undeclared. | Optional     | -                                   |
+| policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                | Optional     | `true`                              |
+| apiUrl                   | SCANOSS API URL                                                                    | Optional     | `https://api.osskb.org/scan/direct` |
+| apiKey                   | SCANOSS API Key                                                                    | Optional     | -                                   |
+| runtimeContainer         | Runtime URL                                                                        | Optional     | `ghcr.io/scanoss/scanoss-py:v1.9.0` |
+| licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list. | Optional     | -                                   |
+| licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.   | Optional     | -                                   |
+| licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.          | Optional     | -                                   |
 
 
 
