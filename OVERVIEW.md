@@ -13,10 +13,15 @@ Open the repository settings section:
   2. Repositories
   3. Select the repository
 
+![Ado-setup-repository-settings](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-setup-1.png?raw=true)
+
 A) Allow Pull Request Contribute Access:
   1. Open the 'Security' tab.
   2. Select the repository Build Service account under the 'Users' group.
   3. Allow "Contribute to pull requests".
+
+![Ado-setup-pull-request-contribution-access](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-setup-2.png?raw=true)
+
 
 B) Add Build Validation Policy to the integration branch:
   1. Open the 'Policies' tab.
@@ -28,8 +33,13 @@ B) Add Build Validation Policy to the integration branch:
       4. Build Expiration: Select your option.
       5. Set a display name.
 
+![Ado-setup-build-validation-policy](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-setup-3.png?raw=true)
+
+
+
+
 ## Pipeline
-To begin using this task, you'll need to set up a basic Pipeline and define a task within it:
+A basic pipeline should be set and the SCANOSS task should be included within it:
 
 ```yaml
 trigger: none
