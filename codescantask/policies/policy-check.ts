@@ -41,6 +41,7 @@ export abstract class PolicyCheck {
     private readonly project:string | undefined;
     private readonly repositoryId:string | undefined;
     private readonly pullRequestId:string | undefined;
+    private readonly buildReason: string | undefined;
     constructor(checkName: string) {
         this.checkName = checkName;
         this.accessToken = tl.getVariable('System.AccessToken');
@@ -48,17 +49,20 @@ export abstract class PolicyCheck {
         this.project = tl.getVariable('System.TeamProjectId') || '';
         this.repositoryId = tl.getVariable('Build.Repository.Id') || '';
         this.pullRequestId = tl.getVariable('System.PullRequest.PullRequestId') || '';
+        this.buildReason = tl.getVariable('Build.Reason');
     }
 
     public abstract run(scanResults: ScannerResults): Promise<void>;
 
     public async start():Promise<void> {
-        await this.updatePRStatus(PR_STATUS.pending,`SCANOSS Policy Check: ${this.checkName}`);
+        await this.updatePRStatus(PR_STATUS.pending, `SCANOSS Policy Check: ${this.checkName}`);
     }
 
     protected async success(summary: string, text?: string): Promise<void> {
         tl.debug(`[${this.checkName}]: SUMMARY: ${summary}, ${text? text : ''} `);
-        await this.updatePRStatus(PR_STATUS.succeeded, `SCANOSS Policy Check: ${this.checkName}`)
+        let status = tl.TaskResult.Succeeded
+        tl.setResult(status, `[${this.checkName}]`);
+        await this.updatePRStatus(PR_STATUS.succeeded, `SCANOSS Policy Check: ${this.checkName}`);
     }
 
     protected async reject(summary: string, text?: string): Promise<void> {
@@ -66,12 +70,15 @@ export abstract class PolicyCheck {
         if (POLICIES_HALT_ON_FAILURE)  status = tl.TaskResult.Failed;
         tl.setResult(status, `[${this.checkName}], SUMMARY: ${summary}, DETAILS: ${text? text: ''} `);
         await this.updatePRStatus(PR_STATUS.failed, `SCANOSS Policy Check: ${this.checkName}`);
-        if(text) {
+        if (text) {
             await this.addCommentToPR(`${this.checkName} Check Results`, text);
         }
+
     }
 
     protected async updatePRStatus(state: PR_STATUS, description: string){
+
+        if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
                 if (!this.accessToken || !this.orgUrl || !this.project || !this.repositoryId || !this.pullRequestId) {
                 throw new Error('Missing necessary environment variables.');
@@ -95,12 +102,14 @@ export abstract class PolicyCheck {
                 }
             });
         } catch (err:any) {
+
             tl.setResult(tl.TaskResult.SucceededWithIssues, `Failed to add status to PR: ${err.message}`);
-             await this.updatePRStatus(PR_STATUS.failed, '');
+            await this.updatePRStatus(PR_STATUS.failed, '');
         }
     }
 
     private async addCommentToPR(title: string, content: string) {
+        if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
             const apiUrl =`${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads?api-version=6.0`;
 

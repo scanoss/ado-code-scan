@@ -88,7 +88,7 @@ If a proxy is required for internet access in your environment, the ***HTTP_PROX
 The SCANOSS Code Scan Task includes two configurable policies:
 
 1. Copyleft: This policy checks if any component or code snippet is associated with a copyleft license. If such a
-   license is detected, the pull request (PR) is rejected.
+   license is detected, the pull request (PR) is rejected. The default list of Copyleft licenses is defined in the following [file](https://github.com/scanoss/ado-code-scan/blob/main/src/utils/license.utils.ts).
 
 2. Undeclared: This policy compares the components detected in the repository against those declared in the sbom.json
    file (customizable through the sbom.filepath parameter). If there are undeclared components, the PR is rejected.
