@@ -39,6 +39,14 @@ pr:
 
 pool:
   vmImage: ubuntu-latest
+
+##schedules:
+##  - cron: "*/5 * * * *"  # Every 5 minutes
+##    displayName: "Run every 5 minutes"
+##    always: true         # Ensures the pipeline runs even if there are no code changes
+##    branches:
+##      include:
+##        - main           # Specify the branch(es) to trigger the schedule on  
   
 variables:
   HTTP_PROXY: $(HTTP_PROXY_URL)
@@ -64,24 +72,27 @@ Minor versions can be set by specifying the full version number of a task after 
 ### Proxy Settings
 If a proxy is required for internet access in your environment, the ***HTTP_PROXY*** and ***HTTPS_PROXY*** variables can be set in the pipeline to the appropriate proxy URLs. This will ensure that all network requests made during the pipeline execution are routed through the specified proxies.
 
+### Pipeline Triggers
+In addition to being triggered by pull requests (PRs), pipelines can also be run manually and scheduled to execute at regular intervals.
+When the pipeline is manually triggered or runs on a schedule, the results are uploaded only to the run artifacts.
 
 ### Action Input Parameters
 
-| **Parameter**            | **Description**                                                                    | **Required** | **Default**                         | 
-|--------------------------|------------------------------------------------------------------------------------|--------------|-------------------------------------|
-| outputFilepath           | Scan output file name.                                                             | Optional     | `results.json`                      |
-| sbomEnabled              | Enable or disable scanning based on the SBOM file                                  | Optional     | `true`                              |
-| sbomFilepath             | Filepath of the SBOM file to be used for scanning                                  | Optional     | `sbom.json`                         |
-| sbomType                 | Type of SBOM operation: either 'identify' or 'ignore                               | Optional     | `identify`                          |
-| dependenciesEnabled      | Option to enable or disable scanning of dependencies.                              | Optional     | `false`                             |
-| policies                 | List of policies separated by commas, options available are: copyleft, undeclared. | Optional     | -                                   |
-| policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                | Optional     | `true`                              |
-| apiUrl                   | SCANOSS API URL                                                                    | Optional     | `https://api.osskb.org/scan/direct` |
-| apiKey                   | SCANOSS API Key                                                                    | Optional     | -                                   |
-| runtimeContainer         | Runtime URL                                                                        | Optional     | `ghcr.io/scanoss/scanoss-py:v1.9.0` |
-| licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list. | Optional     | -                                   |
-| licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.   | Optional     | -                                   |
-| licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.          | Optional     | -                                   |
+| **Parameter**            | **Description**                                                                    | **Required** | **Default**                          | 
+|--------------------------|------------------------------------------------------------------------------------|--------------|--------------------------------------|
+| outputFilepath           | Scan output file name.                                                             | Optional     | `results.json`                       |
+| sbomEnabled              | Enable or disable scanning based on the SBOM file                                  | Optional     | `true`                               |
+| sbomFilepath             | Filepath of the SBOM file to be used for scanning                                  | Optional     | `sbom.json`                          |
+| sbomType                 | Type of SBOM operation: either 'identify' or 'ignore                               | Optional     | `identify`                           |
+| dependenciesEnabled      | Option to enable or disable scanning of dependencies.                              | Optional     | `false`                              |
+| policies                 | List of policies separated by commas, options available are: copyleft, undeclared. | Optional     | -                                    |
+| policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                | Optional     | `true`                               |
+| apiUrl                   | SCANOSS API URL                                                                    | Optional     | `https://api.osskb.org/scan/direct`  |
+| apiKey                   | SCANOSS API Key                                                                    | Optional     | -                                    |
+| runtimeContainer         | Runtime URL                                                                        | Optional     | `ghcr.io/scanoss/scanoss-py:v1.15.0` |
+| licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list. | Optional     | -                                    |
+| licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.   | Optional     | -                                    |
+| licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.          | Optional     | -                                    |
 
 
 ## Policy Checks
