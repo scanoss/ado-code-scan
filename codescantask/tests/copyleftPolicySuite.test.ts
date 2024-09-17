@@ -17,17 +17,9 @@ describe('CopyleftPolicyCheck', () => {
             const details = copyleftPolicyCheck.details();
             const description = copyleftPolicyCheck.getDescription();
             if(!details || !description) assert.fail();
-            assert.equal(normalize(details),normalize( '   |  Component | Version | License | URL | Copyleft  |\n' +
-                '   | - | - | - | - | - |       \n' +
-                '   | pkg:github/scanoss/wfp | 6afc1f6 | Zlib | https://spdx.org/licenses/Zlib.html |   | \n' +
-                ' | pkg:github/scanoss/wfp | 6afc1f6 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | :x: | \n' +
-                ' | pkg:github/scanoss/scanner.c | 1.3.3 | BSD-2-Clause | https://spdx.org/licenses/BSD-2-Clause.html |   | \n' +
-                ' | pkg:github/scanoss/scanner.c | 1.3.3 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | :x: | \n' +
-                ' | pkg:github/scanoss/engine | 4.0.4 | GPL-2.0-or-later | https://spdx.org/licenses/GPL-2.0-or-later.html | :x: | \n' +
-                ' | pkg:github/scanoss/engine | 4.0.4 | GPL-1.0-or-later | https://spdx.org/licenses/GPL-1.0-or-later.html | :x: | \n' +
-                ' | pkg:github/scanoss/engine | 4.0.4 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | :x: | '));
+            assert.equal(normalize(details),normalize( '### Copyleft licenses | Component | Version | License | URL | Copyleft | | - | :-: | - | - | :-: | | pkg:github/scanoss/wfp | 6afc1f6 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | | pkg:github/scanoss/engine | 4.0.4 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES |\n'));
             assert.equal(normalize(description),normalize('### :x: Policy Fail \n' +
-                ' #### 3 component(s) with copyleft licenses were found.  See details for more information.\n'));
+                ' #### 2 component(s) with copyleft licenses were found.  See details for more information.\n'));
     });
 
     it('Copyleft Policy Success', async function() {
