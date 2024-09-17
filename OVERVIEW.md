@@ -95,6 +95,9 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | sbomFilepath             | Filepath of the SBOM file to be used for scanning                                  | Optional     | `sbom.json`                          |
 | sbomType                 | Type of SBOM operation: either 'identify' or 'ignore                               | Optional     | `identify`                           |
 | dependenciesEnabled      | Option to enable or disable scanning of dependencies.                              | Optional     | `false`                              |
+| dependenciesScope        | Gets development or production dependencies (scopes - prod|dev)                                              | Optional     | -                                   |
+| dependenciesScopeInclude | Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.                                              | Optional     | -                                   |
+| dependenciesScopeExclude | Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.                     | Optional     | -                                   |
 | policies                 | List of policies separated by commas, options available are: copyleft, undeclared. | Optional     | -                                    |
 | policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                | Optional     | `true`                               |
 | apiUrl                   | SCANOSS API URL                                                                    | Optional     | `https://api.osskb.org/scan/direct`  |

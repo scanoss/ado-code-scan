@@ -26,7 +26,7 @@ import * as fs from 'fs';
 import {
     API_KEY,
     API_URL,
-    DEPENDENCIES_ENABLED,
+    DEPENDENCIES_ENABLED, DEPENDENCIES_SCOPE, DEPENDENCY_SCOPE_EXCLUDE, DEPENDENCY_SCOPE_INCLUDE,
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
     SBOM_ENABLED,
@@ -54,6 +54,21 @@ export interface Options {
      * Enables scanning for dependencies, utilizing scancode internally. Optional.
      */
     dependenciesEnabled?: boolean;
+
+    /**
+     * Gets dependencies with production scopes. optional
+     */
+    dependencyScope?: string;
+
+    /**
+     * List of custom dependency scopes to be included. optional
+     */
+    dependencyScopeInclude?: string;
+
+    /**
+     * List of custom dependency scopes to be excluded. optional
+     */
+    dependencyScopeExclude?: string;
 
     /**
      * Credentials for SCANOSS, enabling unlimited scans. Optional.
@@ -90,6 +105,9 @@ export class ScanService {
             outputFilepath: path.join(tl.getVariable('Build.Repository.LocalPath') || '' , OUTPUT_FILEPATH),
             inputFilepath: REPO_DIR,
             runtimeContainer: RUNTIME_CONTAINER,
+            dependencyScope: DEPENDENCIES_SCOPE,
+            dependencyScopeExclude: DEPENDENCY_SCOPE_EXCLUDE,
+            dependencyScopeInclude: DEPENDENCY_SCOPE_INCLUDE
         };
     }
     async scan(): Promise<ScannerResults> {
@@ -119,8 +137,32 @@ export class ScanService {
         }
     }
 
+    private dependencyScopeCommand(): string {
+        const { dependencyScopeInclude, dependencyScopeExclude, dependencyScope } = this.options;
+
+        // Count the number of non-empty values
+        const setScopes = [dependencyScopeInclude, dependencyScopeExclude, dependencyScope].filter(
+            scope => scope !== '' && scope !== undefined
+        );
+
+        if (setScopes.length > 1) {
+            tl.setResult(tl.TaskResult.Failed, 'Only one dependency scope filter can be set');
+        }
+
+        if (dependencyScopeExclude && dependencyScopeExclude !== '') return `--dep-scope-exc ${this.options.dependencyScopeExclude}`;
+
+        if (dependencyScopeInclude && dependencyScopeInclude !== '') return `--dep-scope-inc ${this.options.dependencyScopeInclude}`;
+
+        if (dependencyScope && dependencyScope === 'prod') return '--dep-scope prod';
+
+        if (dependencyScope && dependencyScope === 'dev') return '--dep-scope dev';
+
+        return '';
+    }
+
+
     private async buildCommand(): Promise<string> {
-       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./${OUTPUT_FILEPATH} ${this.options.dependenciesEnabled ? `--dependencies` : ''} ${await this.detectSBOM()}  ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
+       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./${OUTPUT_FILEPATH} ${this.options.dependenciesEnabled ? `--dependencies` : ''} ${this.dependencyScopeCommand()} ${await this.detectSBOM()}  ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
     }
 
     private uploadResultsToArtifacts(){

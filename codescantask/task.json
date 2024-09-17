@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 15
+    "Patch": 20
   },
   "inputs": [
     {
@@ -20,6 +20,30 @@
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Specify whether dependencies are enabled."
+    },
+    {
+      "name": "dependenciesScope",
+      "type": "string",
+      "label": "Gets development or production dependencies (scopes - prod|dev).",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Gets development or production dependencies (scopes - prod|dev)."
+    },
+    {
+      "name": "dependenciesScopeInclude",
+      "type": "string",
+      "label": "Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom list of dependency scopes to be included. Provide scopes as a comma-separated list."
+    },
+    {
+      "name": "dependenciesScopeExclude",
+      "type": "string",
+      "label": "Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list."
     },
     {
       "name": "apiKey",
@@ -81,7 +105,7 @@
       "name": "runtimeContainer",
       "type": "string",
       "label": "Runtime container",
-      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.9.0",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.15.0",
       "required": false,
       "helpMarkDown": "Specify runtime container to perform the scan."
     },

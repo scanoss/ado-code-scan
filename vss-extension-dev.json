@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "scanoss-code-scan-dev",
   "name": "SCANOSS Code Scan DEV",
-  "version": "0.1.15",
+  "version": "0.1.20",
   "publisher": "SCANOSS",
   "public": false,
   "targets": [
