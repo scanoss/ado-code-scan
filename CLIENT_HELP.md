@@ -47,7 +47,7 @@ steps:
     sbomFilepath: SBOM.json
     policies: copyleft,undeclared
     policiesHaltOnFailure: false
-    runtimeContainer: '<self_hosted_registry>/scanoss-py:v1.9.0'
+    runtimeContainer: '<self_hosted_registry>/scanoss-py:v1.15.0'
 ```
 
 Replace `<self_hosted_registry>` with the address of your internal Docker registry.

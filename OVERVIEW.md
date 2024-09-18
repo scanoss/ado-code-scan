@@ -74,13 +74,30 @@ steps:
       sbomFilepath: SBOM.json
       policies: copyleft,undeclared
       policiesHaltOnFailure: false
+      dependenciesEnabled: true
+      dependenciesScope: prod 
+      licensesCopyleftInclude: AGPL-1.0-or-later, AGPL-1.0-only
+
+   
 ```
 
 **NOTE**:  
 Minor versions can be set by specifying the full version number of a task after the @ sign (example: scanoss@0.1.1). For further details, please refer to the [task version](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/tasks?view=azure-devops&tabs=yaml#task-versions).
 
-### Proxy Settings
-If a proxy is required for internet access in your environment, the ***HTTP_PROXY*** and ***HTTPS_PROXY*** variables can be set in the pipeline to the appropriate proxy URLs. This will ensure that all network requests made during the pipeline execution are routed through the specified proxies.
+### 3. Proxy Configuration
+
+If your pipeline is running behind a proxy, add the following configuration to the pipeline:
+
+```yaml
+variables:
+  HTTP_PROXY: http://your-proxy:8080
+  HTTPS_PROXY: http://your-proxy:8080
+...
+inputs:
+  runtimeContainer: '<self_hosted_registry>/scanoss-py:v1.15.0'
+```
+Inside the SCANOSS task add the **runtimeContainer** input with the address of your internal Docker registry.
+
 
 ### Pipeline Triggers
 In addition to being triggered by pull requests (PRs), pipelines can also be run manually and scheduled to execute at regular intervals.
