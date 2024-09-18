@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 1
+    "Patch": 2
   },
   "inputs": [
     {
@@ -20,6 +20,30 @@
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Specify whether dependencies are enabled."
+    },
+    {
+      "name": "dependenciesScope",
+      "type": "string",
+      "label": "Gets development or production dependencies (scopes - prod|dev).",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Gets development or production dependencies (scopes - prod|dev)."
+    },
+    {
+      "name": "dependenciesScopeInclude",
+      "type": "string",
+      "label": "Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom list of dependency scopes to be included. Provide scopes as a comma-separated list."
+    },
+    {
+      "name": "dependenciesScopeExclude",
+      "type": "string",
+      "label": "Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list."
     },
     {
       "name": "apiKey",
@@ -57,7 +81,7 @@
       "name": "sbomType",
       "type": "string",
       "label": "SBOM Type",
-      "defaultValue": "",
+      "defaultValue": "identify",
       "required": false,
       "helpMarkDown": "Specify the SBOM type."
     },
@@ -81,7 +105,7 @@
       "name": "runtimeContainer",
       "type": "string",
       "label": "Runtime container",
-      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.9.0",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.15.0",
       "required": false,
       "helpMarkDown": "Specify runtime container to perform the scan."
     },
@@ -92,6 +116,30 @@
       "defaultValue": "results.json",
       "required": false,
       "helpMarkDown": "Scan output file name."
+    },
+    {
+      "name": "licensesCopyleftInclude",
+      "type": "string",
+      "label": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list."
+    },
+    {
+      "name": "licensesCopyleftExclude",
+      "type": "string",
+      "label": "List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list."
+    },
+    {
+      "name": "licensesCopyleftExplicit",
+      "type": "string",
+      "label": "Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list."
     }
   ],
   "execution": {

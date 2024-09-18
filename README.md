@@ -35,22 +35,63 @@ Before building the app, run test suites.
 make test
 ```
 
-### Upgrade App version
 
-A script file is provided to simply the app versioning process.
+# Publish
 
-1. Ensure to update the version in the **package.json** file.
+## Development
 
-2. Then, run the following command to build the app:
-``` bash
+### Update Version for Publishing
+
+To streamline the app versioning process for development:
+
+1. Update the version in the **package.json** file.
+
+2. Execute the following command to apply the version upgrade and build the app:
+```bash
+make upgrade_version_dev
+```
+
+### Building the App for Development
+
+To build the app for a development environment:
+
+```bash
+make package_dev
+```
+
+### Publish the App to Development
+
+1. Generate a publishing token. For instructions on how to generate the token, refer to [Publish from the Command Line](https://learn.microsoft.com/en-us/azure/devops/extend/publish/command-line?view=azure-devops).
+
+2. Publish the app using the following command:
+```
+tfx extension publish --manifest-globs vss-extension-dev.json --publisher SCANOSS --token $MSFT_PERSONAL_ACCESS_TOKEN
+```
+
+
+## Production
+
+### Update Version for Publishing
+
+1. Ensure that the version in the **package.json** file is updated.
+
+2. Build the app with the following command:
+```bash
 make upgrade_version
 ```
 
-### Build the App
-Run the following command to build the app:
+### Build the App for Production
 
-``` bash
-make build
+To build the app for the production environment, run:
+```bash
+make package
 ```
 
+### Publish the App to Production
 
+1. Generate a publishing token. For instructions on how to generate the token, refer to [Publish from the Command Line](https://learn.microsoft.com/en-us/azure/devops/extend/publish/command-line?view=azure-devops).
+
+2. Publish the app using the following command:
+```
+tfx extension publish --manifest-globs vss-extension.json vss-extension-release.json --publisher SCANOSS --token $MSFT_PERSONAL_ACCESS_TOKEN
+```

@@ -38,27 +38,7 @@ describe('Undeclared Policy Check Suite', () => {
         if(!description  || !details) assert.fail();
 
         assert.equal(normalize(`### :x: Policy Fail #### 3 undeclared component(s) were found. See details for more information.`),normalize(description));
-        assert.equal(normalize(`### Undeclared components
-            
-            |  Component | Version | License  |
-            | - | - | - |
-            | pkg:github/scanoss/wfp | 6afc1f6 | Zlib - GPL-2.0-only |
-            | pkg:github/scanoss/scanner.c | 1.3.3 | BSD-2-Clause - GPL-2.0-only |
-            | pkg:github/scanoss/engine | 4.0.4 | GPL-2.0-or-later - GPL-1.0-or-later - GPL-2.0-only |
-            #### Add the following snippet into your \`sbom.json\` file
-            \`\`\`json
-            [
-                {
-                    "purl": "pkg:github/scanoss/wfp"
-                },
-                {
-                    "purl": "pkg:github/scanoss/scanner.c"
-                },
-                {
-                    "purl": "pkg:github/scanoss/engine"
-                }
-            ]
-            \`\`\``), normalize(details));
+        assert.equal(normalize(`### Undeclared components | Component | Version | License | | - | - | - | | pkg:github/scanoss/wfp | 6afc1f6 | Zlib - GPL-2.0-only | | pkg:github/scanoss/scanner.c | 1.3.3 | BSD-2-Clause | | pkg:github/scanoss/engine | 4.0.4 | GPL-2.0-or-later - GPL-1.0-or-later - GPL-2.0-only | #### Add the following snippet into your \`SBOM.json\` file \`\`\`json { "components": [ { "purl": "pkg:github/scanoss/wfp" }, { "purl": "pkg:github/scanoss/scanner.c" }, { "purl": "pkg:github/scanoss/engine" } ] } \`\`\``), normalize(details));
 
     });
 

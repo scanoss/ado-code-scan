@@ -25,7 +25,7 @@ import { generateTable } from '../utils/markdown.utils';
 import { Component, getComponents } from '../services/result.service';
 import { PolicyCheck } from './policy-check';
 import { parseSBOM } from '../utils/sbom.utils';
-import { REPO_DIR, SBOM_FILEPATH } from '../app.input';
+import { SBOM_FILEPATH } from '../app.input';
 import { ScannerResults } from '../services/result.interface';
 import * as tl from 'azure-pipelines-task-lib';
 
@@ -37,6 +37,7 @@ import * as tl from 'azure-pipelines-task-lib';
  *
  */
 export class UndeclaredPolicyCheck extends PolicyCheck {
+    private policyCheckResultName = 'policy-check-undeclared-results.md';
     constructor() {
         super(`Undeclared Policy`);
     }
@@ -71,6 +72,10 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
         const summary = this.getSummary(nonDeclaredComponents);
         const details = this.getDetails(nonDeclaredComponents);
 
+        if (details) {
+            await this.uploadArtifact(this.policyCheckResultName, details);
+        }
+
         if (nonDeclaredComponents.length === 0) {
             await this.success(summary, details);
         } else {
@@ -95,14 +100,10 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
             rows.push([component.purl, component.version, licenses]);
         });
 
-        const snippet = JSON.stringify(
-            components.map(({ purl }) => ({ purl })),
-            null,
-            4
-        );
+        const snippet = JSON.stringify( { components: components.map(({ purl }) => ({ purl }))  }, null, 2 );
 
         let content = `### Undeclared components \n ${generateTable(headers, rows)}`;
-        content += `#### Add the following snippet into your \`sbom.json\` file \n \`\`\`json \n ${snippet} \n \`\`\``;
+        content += `#### Add the following snippet into your \`${SBOM_FILEPATH ? SBOM_FILEPATH : 'SBOM.json'}\` file \n \`\`\`json \n ${snippet} \n \`\`\``;
 
         return content;
     }
