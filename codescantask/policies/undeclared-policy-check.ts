@@ -56,7 +56,7 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
           declaredComponents = sbom.components || [];
         } catch (e: unknown) {
             if (e instanceof Error) {
-                tl.warning(`Warning on policy check: ${this.checkName}. SBOM file connot be parsed`);
+                tl.warning(`Warning on policy check: ${this.checkName}. SBOM file cannot be parsed or was not found.`);
             }
         }
 
