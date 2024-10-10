@@ -2,4 +2,4 @@ node_modules
 SCANOSS*.vsix
 *.js
 .idea
-codescantask/*.taskkey
+.taskkey
