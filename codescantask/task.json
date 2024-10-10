@@ -73,7 +73,7 @@
       "name": "sbomFilepath",
       "type": "string",
       "label": "SBOM Filepath",
-      "defaultValue": "",
+      "defaultValue": "sbom.json",
       "required": false,
       "helpMarkDown": "Specify the SBOM filepath."
     },
