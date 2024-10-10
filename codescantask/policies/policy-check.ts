@@ -77,11 +77,16 @@ export abstract class PolicyCheck {
     }
 
     protected async updatePRStatus(state: PR_STATUS, description: string){
-
         if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
-                if (!this.accessToken || !this.orgUrl || !this.project || !this.repositoryId || !this.pullRequestId) {
-                throw new Error('Missing necessary environment variables.');
+            if (!this.accessToken || !this.orgUrl || !this.project || !this.repositoryId || !this.pullRequestId) {
+                throw new Error(`Missing necessary environment variables.\n   
+                        Access Token: ${this.accessToken}\n
+                        Organization url: ${this.orgUrl}\n
+                        Project: ${this.project}\n
+                        Repository ID: ${this.repositoryId}\n
+                        Pull request id: ${this.repositoryId}                
+                `);
             }
 
             const status = {
@@ -102,10 +107,8 @@ export abstract class PolicyCheck {
                 }
             });
         } catch (err:any) {
-
             tl.setResult(tl.TaskResult.SucceededWithIssues, `Failed to add status to PR: ${err.message}`);
-            await this.updatePRStatus(PR_STATUS.failed, '');
-        }
+       }
     }
 
     private async addCommentToPR(title: string, content: string) {
