@@ -35,7 +35,10 @@ B) Add Build Validation Policy to the integration branch:
 
 ![Ado-setup-build-validation-policy](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-setup-3.png?raw=true)
 
+#### Azure agent jobs
+If an Azure Agent Job is being run, ensure that the '*Allow scripts to access OAuth token*' option is enabled. The SCANOSS Code Scan Task requires access to the System Access token to push the results to the PR.
 
+![ADO setup agent job](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-agent-job.png?raw=true)
 
 
 ## Pipeline
