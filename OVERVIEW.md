@@ -115,7 +115,7 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | sbomFilepath             | Filepath of the SBOM file to be used for scanning                                                    | Optional     | `sbom.json`                          |
 | sbomType                 | Type of SBOM operation: either 'identify' or 'ignore                                                 | Optional     | `identify`                           |
 | dependenciesEnabled      | Option to enable or disable scanning of dependencies.                                                | Optional     | `false`                              |
-| dependenciesScope        | Gets development or production dependencies (scopes: dev - prod )                                    | Optional     | -                                    |                       |
+| dependenciesScope        | Gets development or production dependencies (scopes: dev - prod )                                    | Optional     | -                                    |                       
 | dependenciesScopeInclude | Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.           | Optional     | -                                    |
 | dependenciesScopeExclude | Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.           | Optional     | -                                    |
 | policies                 | List of policies separated by commas, options available are: copyleft, undeclared.                   | Optional     | -                                    |
@@ -126,7 +126,8 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list. | Optional     | -                                    |
 | licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.   | Optional     | -                                    |
 | licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.          | Optional     | -                                    |
-
+| skipSnippets             | Skip the generation of snippets. (scan_files option must be enabled)                                 | Optional     | `false`                              |
+| scanFiles                | Enable or disable file and snippet scanning                                                          | Optional     | `true`                               |
 
 ## Policy Checks
 The SCANOSS Code Scan Task includes two configurable policies:

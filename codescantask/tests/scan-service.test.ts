@@ -10,7 +10,9 @@ describe('ScanService', function () {
             runtimeContainer: '',
             dependencyScope: 'prod',
             dependencyScopeInclude: '',
-            dependencyScopeExclude: ''
+            dependencyScopeExclude: '',
+            scanFiles: true,
+            skipSnippets: false,
         });
 
         // Accessing the private method by bypassing TypeScript type checks

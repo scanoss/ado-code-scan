@@ -30,7 +30,7 @@ import {
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
     SBOM_ENABLED,
-    SBOM_FILEPATH, SBOM_TYPE
+    SBOM_FILEPATH, SBOM_TYPE, SCAN_FILES, SKIP_SNIPPETS
 } from '../app.input';
 import { ScannerResults } from './result.interface';
 import path from 'path';
@@ -91,7 +91,48 @@ export interface Options {
      */
     runtimeContainer: string;
 
+    /**
+     * Skips snippet generation. Default [false]
+     */
+    skipSnippets: boolean;
+
+    /**
+     * Enables or disables file and snippet scanning. Default [true]
+     */
+    scanFiles: boolean;
+
 }
+
+/**
+ * @class ScannerService
+ * @brief A service class that manages scanning operations using the scanoss-py Docker container
+ *
+ * @details
+ * The ScannerService class provides functionality to scan repositories for:
+ * - File scanning
+ * - Dependency analysis
+ *
+ * @property {Options} options - Configuration options for the scanner
+ * @property {string} options.apiKey - API key for SCANOSS service authentication
+ * @property {string} options.apiUrl - URL endpoint for the SCANOSS service
+ * @property {boolean} options.sbomEnabled - Flag to enable SBOM generation
+ * @property {string} options.sbomFilepath - Path to store or read SBOM files
+ * @property {string} options.sbomType - Type of SBOM format to use
+ * @property {boolean} options.dependenciesEnabled - Flag to enable dependency scanning
+ * @property {string} options.outputFilepath - Path for scan results output
+ * @property {string} options.inputFilepath - Path to the repository to scan
+ * @property {string} options.runtimeContainer - Docker container image to use
+ * @property {string} options.dependencyScope - Scope for dependency scanning (prod/dev)
+ * @property {string} options.dependencyScopeExclude - Dependencies to exclude from scan
+ * @property {string} options.dependencyScopeInclude - Dependencies to include in scan
+ * @property {boolean} options.skipSnippets - Flag to skip snippet scanning
+ * @property {boolean} options.scanFiles - Flag to enable file scanning
+ *
+ * @throws {Error} When required configuration options are missing or invalid
+ *
+ * @author [SCANOSS]
+ */
+
 export class ScanService {
     private options: Options;
     constructor(options?: Options) {
@@ -107,11 +148,32 @@ export class ScanService {
             runtimeContainer: RUNTIME_CONTAINER,
             dependencyScope: DEPENDENCIES_SCOPE,
             dependencyScopeExclude: DEPENDENCY_SCOPE_EXCLUDE,
-            dependencyScopeInclude: DEPENDENCY_SCOPE_INCLUDE
+            dependencyScopeInclude: DEPENDENCY_SCOPE_INCLUDE,
+            skipSnippets: SKIP_SNIPPETS,
+            scanFiles: SCAN_FILES
         };
     }
+
+    /**
+     * @brief Executes the scanning process using a scanoss-py Docker container
+     * @throws {Error} When Docker command fails or configuration is invalid
+     * @returns {Promise<ScannerResults>} The results of the scanning operation
+     *
+     * @details
+     * This method performs the following operations:
+     * - Validates basic configuration
+     * - Executes Docker command
+     * - Uploads results to artifacts
+     * - Parses and returns results
+     *
+     * @note At least one scan option (scanFiles or dependenciesEnabled) must be enabled
+     */
     async scan(): Promise<ScannerResults> {
         try {
+
+            // Check for basic configuration before running the docker container
+            this.checkBasicConfig();
+
             const dockerCommand = await this.buildCommand();
             console.log(`Executing Docker command: ${dockerCommand}`);
 
@@ -137,6 +199,38 @@ export class ScanService {
         }
     }
 
+    /**
+     * @brief Validates the basic configuration requirements for scanning
+     *
+     * @throws {Error} When no scan options are enabled
+     *
+     * @details
+     * This method ensures that at least one of the following scan options is enabled:
+     * - scanFiles: For scanning source code files
+     * - dependenciesEnabled: For scanning project dependencies
+     *
+     */
+    private checkBasicConfig(): void {
+        if (!this.options.scanFiles && !this.options.dependenciesEnabled) {
+            tl.setResult(tl.TaskResult.Failed, `At least one scan option should be enabled: [scanFiles, 
+                dependencyEnabled]`);
+        }
+    }
+
+    /**
+     * @brief Builds the dependency scope command string
+     * @returns {string} The formatted dependency scope command
+     *
+     * @details
+     * Handles three possible scope configurations:
+     * - Dependency scope exclude
+     * - Dependency scope include
+     * - Dependency scope (prod/dev)
+     *
+     * @throws {Error} When multiple dependency scope filters are set
+     *
+     * @note Only one dependency scope filter can be set at a time
+     */
     private dependencyScopeCommand(): string {
         const { dependencyScopeInclude, dependencyScopeExclude, dependencyScope } = this.options;
 
@@ -160,11 +254,67 @@ export class ScanService {
         return '';
     }
 
-
-    private async buildCommand(): Promise<string> {
-       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./${OUTPUT_FILEPATH} ${this.options.dependenciesEnabled ? `--dependencies` : ''} ${this.dependencyScopeCommand()} ${await this.detectSBOM()}  ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
+    /**
+     * @brief Generates the snippet-related portion of the Docker command
+     * @returns {string} The snippet command flag (-S) or empty string
+     *
+     * @details
+     * Returns '-S' if snippets should be skipped, empty string otherwise
+     */
+    private buildSnippetCommand(): string {
+        if (!this.options.skipSnippets) return '';
+        return '-S'
     }
 
+    /**
+     * @brief Constructs the dependencies cmd
+     * @returns {string} The formatted dependencies command
+     *
+     * @details
+     * Combines dependency scanning options with scope commands.
+     * Possible return values:
+     * - '--dependencies-only ${scopeCmd}'
+     * - '--dependencies ${scopeCmd}'
+     * - Empty string if no dependencies scanning is needed
+     */
+    private buildDependenciesCommand(): string {
+        const dependencyScopeCmd = this.dependencyScopeCommand();
+        if (!this.options.scanFiles && this.options.dependenciesEnabled) {
+            return `--dependencies-only ${dependencyScopeCmd}`;
+        } else if (this.options.dependenciesEnabled) {
+            return `--dependencies ${dependencyScopeCmd}`;
+        }
+        return '';
+    }
+
+    /**
+     * @brief Assembles the complete Docker command string
+     * @returns {Promise<string>} The complete Docker command
+     *
+     * @details
+     * Combines all command components:
+     * - Docker run command with volume mounting
+     * - Runtime container specification
+     * - Scan command with output file
+     * - Dependencies command
+     * - SBOM detection
+     * - Snippet command
+     * - API configuration
+     *
+     */
+    private async buildCommand(): Promise<string> {
+       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./${OUTPUT_FILEPATH} ${this.buildDependenciesCommand()} ${await this.detectSBOM()} ${this.buildSnippetCommand()} ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
+    }
+
+    /**
+     * @brief Uploads scan results to the build artifacts
+     *
+     * @details
+     * Creates an artifact named 'scanoss' and uploads the output file
+     * to the artifact storage system
+     *
+     * @note This method is called automatically after successful scan completion
+     */
     private uploadResultsToArtifacts(){
         const artifactName = 'scanoss';
         tl.command('artifact.upload', { artifactname: artifactName }, this.options.outputFilepath);
