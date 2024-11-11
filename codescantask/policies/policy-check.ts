@@ -22,7 +22,6 @@
  */
 
 import * as tl from 'azure-pipelines-task-lib';
-import { ScannerResults } from '../services/result.interface';
 import { POLICIES_HALT_ON_FAILURE } from '../app.input';
 import axios from 'axios';
 import path from 'path';
@@ -52,7 +51,7 @@ export abstract class PolicyCheck {
         this.buildReason = tl.getVariable('Build.Reason');
     }
 
-    public abstract run(scanResults: ScannerResults): Promise<void>;
+    public abstract run(): Promise<void>;
 
     public async start():Promise<void> {
         await this.updatePRStatus(PR_STATUS.pending, `SCANOSS Policy Check: ${this.checkName}`);

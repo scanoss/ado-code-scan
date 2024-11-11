@@ -28,12 +28,12 @@ async function run() {
     try {
             console.log("Starting scan");
             const scanService = new ScanService();
-            const results  = await scanService.scan();
+            await scanService.scan();
             const policies = policyManager.getPolicies();
 
         // run policies
         for (const policy of policies) {
-            await policy.run(results);
+            await policy.run();
         }
 
     }

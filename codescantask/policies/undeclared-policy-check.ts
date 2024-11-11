@@ -21,12 +21,8 @@
    THE SOFTWARE.
  */
 
-import { generateTable } from '../utils/markdown.utils';
-import { Component, getComponents } from '../services/result.service';
 import { PolicyCheck } from './policy-check';
-import { parseSBOM } from '../utils/sbom.utils';
-import { SBOM_FILEPATH } from '../app.input';
-import { ScannerResults } from '../services/result.interface';
+import {OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER } from '../app.input';
 import * as tl from 'azure-pipelines-task-lib';
 
 /**
@@ -42,66 +38,29 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
         super(`Undeclared Policy`);
     }
 
-    async run(scannerResults: ScannerResults): Promise<void> {
+
+    private async buildCommand(): Promise<string> {
+        return `docker run -v "${REPO_DIR}:/scanoss" ${RUNTIME_CONTAINER} inspect undeclared --input ${OUTPUT_FILEPATH}  --format md`;
+    }
+
+    private getResults(details: string, summary:string) {
+        return `${details}\n${summary}`;
+    }
+
+    async run(): Promise<void> {
         await this.start();
 
-        const nonDeclaredComponents: Component[] = [];
-        let declaredComponents: Partial<Component>[] = [];
+        const dockerCommand = await this.buildCommand();
 
-        const comps = getComponents(scannerResults);
+        console.log(`Executing Docker command: ${dockerCommand}`);
+        const results = tl.execSync('bash', ['-c', dockerCommand]);
 
-
-        try {
-          const sbom = await parseSBOM(SBOM_FILEPATH);
-          declaredComponents = sbom.components || [];
-        } catch (e: unknown) {
-            if (e instanceof Error) {
-                tl.warning(`Warning on policy check: ${this.checkName}. SBOM file cannot be parsed or was not found.`);
-            }
+        if (results.code === 1) {
+            await this.success('### :white_check_mark: Policy Pass \n #### Not undeclared components were found', undefined);
+            return;
         }
-
-        comps.forEach(c => {
-            if (!declaredComponents.some(component => component.purl === c.purl)) {
-                nonDeclaredComponents.push(c);
-            }
-        });
-
-        const summary = this.getSummary(nonDeclaredComponents);
-        const details = this.getDetails(nonDeclaredComponents);
-
-        if (details) {
-            await this.uploadArtifact(this.policyCheckResultName, details);
-        }
-
-        if (nonDeclaredComponents.length === 0) {
-            await this.success(summary, details);
-        } else {
-            await this.reject(summary, details);
-        }
-    }
-
-    private getSummary(components: Component[]): string {
-        return components.length === 0
-            ? '### :white_check_mark: Policy Pass \n #### Not undeclared components were found'
-            : `### :x: Policy Fail \n #### ${components.length} undeclared component(s) were found. \n See details for more information.`;
-    }
-
-    private getDetails(components: Component[]): string | undefined {
-        if (components.length === 0) return undefined;
-
-        const headers = ['Component', 'Version', 'License'];
-        const rows: string[][] = [];
-
-        components.forEach(component => {
-            const licenses = component.licenses.map(l => l.spdxid).join(' - ');
-            rows.push([component.purl, component.version, licenses]);
-        });
-
-        const snippet = JSON.stringify( { components: components.map(({ purl }) => ({ purl }))  }, null, 2 );
-
-        let content = `### Undeclared components \n ${generateTable(headers, rows)}`;
-        content += `#### Add the following snippet into your \`${SBOM_FILEPATH ? SBOM_FILEPATH : 'SBOM.json'}\` file \n \`\`\`json \n ${snippet} \n \`\`\``;
-
-        return content;
+        const undeclaredComponentsResults = this.getResults(results.stdout,results.stderr);
+        await this.uploadArtifact(this.policyCheckResultName, undeclaredComponentsResults);
+        await this.reject(results.stderr, undeclaredComponentsResults);
     }
 }

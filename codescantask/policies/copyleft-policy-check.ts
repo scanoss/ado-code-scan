@@ -21,11 +21,15 @@
    THE SOFTWARE.
  */
 
-import { Component, getComponents } from '../services/result.service';
-import { generateTable } from '../utils/markdown.utils';
-import { ScannerResults } from '../services/result.interface';
 import { PolicyCheck } from './policy-check';
-import { licenseUtil } from '../utils/license.utils';
+import * as tl from "azure-pipelines-task-lib";
+import {
+    COPYLEFT_LICENSE_EXCLUDE, COPYLEFT_LICENSE_EXPLICIT,
+    COPYLEFT_LICENSE_INCLUDE,
+    OUTPUT_FILEPATH,
+    REPO_DIR,
+    RUNTIME_CONTAINER
+} from "../app.input";
 
 /**
  * This class checks if any of the components identified in the scanner results are subject to copyleft licenses.
@@ -38,58 +42,45 @@ export class CopyleftPolicyCheck extends PolicyCheck {
         super(`Copyleft Policy`);
     }
 
-    async run(scannerResults: ScannerResults): Promise<void> {
+    private buildCopyleftCommand(){
+        if (COPYLEFT_LICENSE_EXPLICIT) {
+            tl.debug(`Explicit copyleft licenses: ${COPYLEFT_LICENSE_EXPLICIT}`);
+            return `--explicit ${COPYLEFT_LICENSE_EXPLICIT}`;
+        }
+
+        if (COPYLEFT_LICENSE_INCLUDE) {
+            tl.debug(`Included copyleft licenses: ${COPYLEFT_LICENSE_INCLUDE}`);
+            return `--include ${COPYLEFT_LICENSE_INCLUDE}`;
+        }
+
+        if (COPYLEFT_LICENSE_EXCLUDE) {
+            tl.debug(`Excluded copyleft licenses: ${COPYLEFT_LICENSE_EXCLUDE}`);
+            return `--exclude ${COPYLEFT_LICENSE_EXCLUDE}`;
+        }
+
+        return '';
+    }
+
+    private async buildCommand(): Promise<string> {
+        return `docker run -v "${REPO_DIR}:/scanoss" ${RUNTIME_CONTAINER} inspect copyleft --input ${OUTPUT_FILEPATH} ${this.buildCopyleftCommand()} --format md`;
+    }
+
+    async run(): Promise<void> {
         await this.start();
-        const components = getComponents(scannerResults);
 
-        // Filter copyleft components
-        const componentsWithCopyleft = components.filter(component =>
-            component.licenses.some(
-                license => !!license.copyleft || licenseUtil.isCopyLeft(license.spdxid.trim().toLowerCase())
-            )
-        );
+        const dockerCommand = await this.buildCommand();
 
-        const summary = this.getSummary(componentsWithCopyleft);
-        const details = this.getDetails(componentsWithCopyleft);
+        console.log(`Executing Docker command: ${dockerCommand}`);
+        const results = tl.execSync('bash', ['-c', dockerCommand]);
 
-        if (details) {
-            await this.uploadArtifact(this.policyCheckResultName, details);
+        if (results.code === 1) {
+            await this.success('### :white_check_mark: Policy Pass \n #### Not copyleft Licenses were found', undefined);
+            return;
         }
 
-        if (componentsWithCopyleft.length === 0) {
-            await this.success(summary, details);
-        } else {
-            await this.reject(summary, details);
-        }
+        await this.uploadArtifact(this.policyCheckResultName, results.stdout);
+        await this.reject(results.stderr, results.stdout);
+
     }
 
-    private getSummary(components: Component[]): string {
-        return components.length === 0
-            ? '### :white_check_mark: Policy Pass \n #### Not copyleft components were found'
-            : `### :x: Policy Fail \n #### ${components.length} component(s) with copyleft licenses were found. \n See details for more information.`;
-    }
-
-    private getDetails(components: Component[]): string | undefined {
-        if (components.length === 0) return undefined;
-
-        const headers = ['Component', 'Version', 'License', 'URL', 'Copyleft'];
-        const centeredColumns = [1, 4];
-        const rows: string[][] = [];
-
-        components.forEach(component => {
-            component.licenses.forEach(license => {
-                if (licenseUtil.isCopyLeft(license.spdxid?.trim().toLowerCase())) {
-                    const copyleftIcon = licenseUtil.isCopyLeft(license.spdxid?.trim().toLowerCase()) ? 'YES' : 'NO';
-                    rows.push([
-                        component.purl,
-                        component.version,
-                        license.spdxid,
-                        `${licenseUtil.getOSADL(license?.spdxid) || ''}`,
-                        copyleftIcon
-                    ]);
-                }
-            });
-        });
-        return `### Copyleft licenses \n ${generateTable(headers, rows, centeredColumns)}`;
-    }
 }
