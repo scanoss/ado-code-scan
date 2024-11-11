@@ -59,6 +59,14 @@ To build the app for a development environment:
 make package_dev
 ```
 
+### macOS (ARM64) Building for Development 
+For macOS users with ARM64 architecture, run the following command:
+```bash
+make package_dev_mac_arm64
+```
+For more details see the following [issue](https://github.com/microsoft/tfs-cli/issues/414).
+
+
 ### Publish the App to Development
 
 1. Generate a publishing token. For instructions on how to generate the token, refer to [Publish from the Command Line](https://learn.microsoft.com/en-us/azure/devops/extend/publish/command-line?view=azure-devops).

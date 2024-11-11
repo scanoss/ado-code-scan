@@ -1,4 +1,4 @@
-.PHONY: build test upgrade_version_dev upgrade_version package package_dev install package_dev_mac
+.PHONY: build test upgrade_version_dev upgrade_version package package_dev install package_dev_mac_arm64
 
 
 install:
@@ -19,7 +19,7 @@ package:build
 package_dev:build
 	tfx extension create --manifest-globs vss-extension-dev.json vss
 
-package_dev_mac:package_dev
+package_dev_mac_arm64:package_dev
 	@LATEST_VSIX=$$(ls -t *.vsix | head -1); \
 	echo "Processing $$LATEST_VSIX..."; \
 	TMPDIR=$$(mktemp -d); \
