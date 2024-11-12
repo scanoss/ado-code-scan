@@ -156,6 +156,22 @@
       "defaultValue": true,
       "required": false,
       "helpMarkDown": "Enable or disable file and snippet scanning."
+    },
+    {
+      "name": "scanossSettings",
+      "type": "boolean",
+      "label": " Settings file to use for scanning.",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": " Settings file to use for scanning."
+    },
+    {
+      "name": "settingsFilepath",
+      "type": "string",
+      "label": "SCANOSS settings file path.",
+      "defaultValue": "scanoss.json",
+      "required": false,
+      "helpMarkDown": "SCANOSS settings file path."
     }
   ],
   "execution": {

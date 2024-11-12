@@ -40,3 +40,5 @@ export const POLICIES_HALT_ON_FAILURE = tl.getInput('policiesHaltOnFailure') ===
 export const RUNTIME_CONTAINER = tl.getInput('runtimeContainer') || "ghcr.io/scanoss/scanoss-py:v1.15.0";
 export const SKIP_SNIPPETS = tl.getInput('skipSnippets') === 'true';
 export const SCAN_FILES = tl.getInput('scanFiles') === 'true';
+export const SCANOSS_SETTINGS = tl.getInput('scanossSettings') === 'false';
+export const SETTINGS_FILE_PATH = tl.getInput('settingsFilepath') || 'scanoss.json';

@@ -30,7 +30,7 @@ import {
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
     SBOM_ENABLED,
-    SBOM_FILEPATH, SBOM_TYPE, SCAN_FILES, SKIP_SNIPPETS
+    SBOM_FILEPATH, SBOM_TYPE, SCAN_FILES, SCANOSS_SETTINGS, SETTINGS_FILE_PATH, SKIP_SNIPPETS
 } from '../app.input';
 import { ScannerResults } from './result.interface';
 import path from 'path';
@@ -101,6 +101,16 @@ export interface Options {
      */
     scanFiles: boolean;
 
+    /**
+     * Enables or disables SCANOSS settings. Default [false]
+     */
+    scanossSettings: boolean;
+
+    /**
+     * SCANOSS Settings file path. Default [scanoss.json]
+     */
+    settingsFilePath: string;
+
 }
 
 /**
@@ -150,7 +160,9 @@ export class ScanService {
             dependencyScopeExclude: DEPENDENCY_SCOPE_EXCLUDE,
             dependencyScopeInclude: DEPENDENCY_SCOPE_INCLUDE,
             skipSnippets: SKIP_SNIPPETS,
-            scanFiles: SCAN_FILES
+            scanFiles: SCAN_FILES,
+            scanossSettings: SCANOSS_SETTINGS,
+            settingsFilePath: SETTINGS_FILE_PATH
         };
     }
 
@@ -333,6 +345,11 @@ export class ScanService {
      * @private
      */
     private async detectSBOM(): Promise<string> {
+
+        // Overrides sbom file if is set
+        if (this.options.scanossSettings)
+            return `--settings ${this.options.settingsFilePath}`;
+
         if (!this.options.sbomEnabled || !this.options.sbomFilepath) return '';
 
         try {

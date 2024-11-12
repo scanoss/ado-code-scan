@@ -128,6 +128,9 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.          | Optional     | -                                    |
 | skipSnippets             | Skip the generation of snippets. (scan_files option must be enabled)                                 | Optional     | `false`                              |
 | scanFiles                | Enable or disable file and snippet scanning                                                          | Optional     | `true`                               |
+| scanossSettings          | Settings file to use for scanning                                                                    | Optional     | `false`                              |
+| settingsFilepath         | Filepath of the SCANOSS settings to be used for scanning                                             | Optional     | `scanoss.json`                       |
+
 
 ## Policy Checks
 The SCANOSS Code Scan Task includes two configurable policies:
