@@ -7,12 +7,20 @@ import {
 } from "../app.input";
 import * as sinon from "sinon";
 import * as tl from "azure-pipelines-task-lib";
+import path from "path";
+
+const sanitize = (input: string):string => {
+    return input.replace(/[ \n\r]/g, '');
+}
 
 describe('CopyleftPolicyCheck', () => {
+
 
     const defaultCopyleftLicenseExplicit = COPYLEFT_LICENSE_EXPLICIT;
     const defaultCopyleftLicenseExclude = COPYLEFT_LICENSE_EXCLUDE;
     const defaultCopyleftLicenseInclude = COPYLEFT_LICENSE_INCLUDE;
+
+
 
     let getInputStub: sinon.SinonStub;
 
@@ -72,9 +80,101 @@ describe('CopyleftPolicyCheck', () => {
         (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
         (OUTPUT_FILEPATH as any) = 'results.json';
         const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
-        const cmd = copyleftPolicyCheck.buildCommandTesteable()
-        console.log(cmd);
+        const cmd = copyleftPolicyCheck.buildCommandTesteable();
         assert.equal(cmd,'docker run -v "repodir:/scanoss" ghcr.io/scanoss/scanoss-py:v1.17.5 inspect copyleft --input results.json  --format md');
+    });
+
+    it('Copyleft policy check fail', async function () {
+        this.timeout(30000);
+        const TEST_DIR = __dirname;
+        const TEST_REPO_DIR = path.join(TEST_DIR, 'data');
+        const TEST_RESULTS_FILE = 'results.json';
+
+        // Set the required environment variables
+        (REPO_DIR as any) = TEST_REPO_DIR;
+        (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
+        (OUTPUT_FILEPATH as any) = TEST_RESULTS_FILE;
+
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+
+        await copyleftPolicyCheck.run();
+
+        const details = copyleftPolicyCheck.details();
+        const summary = copyleftPolicyCheck.getDescription();
+
+        assert(details !== undefined, 'Details should not be undefined');
+        assert(summary !== undefined, 'Summary should not be undefined');
+
+        assert.equal(sanitize(details),sanitize(`### Copyleft licenses
+         | Component | Version | License | URL | Copyleft | 
+         | - | :-: | - | - | :-: | 
+         | pkg:github/scanoss/wfp | 6afc1f6 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | 
+         | pkg:github/scanoss/scanner.c | 1.3.3 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | 
+        `));
+        // Add your assertions here
+        assert.equal(sanitize(summary),sanitize(`2 component(s) with copyleft licenses were found.`));
+    });
+
+
+    it('Copyleft policy empty results', async function () {
+        this.timeout(30000);
+        const TEST_DIR = __dirname;
+        const TEST_REPO_DIR = path.join(TEST_DIR, 'data');
+        const TEST_RESULTS_FILE = 'results.json';
+
+        // Set the required environment variables
+        (REPO_DIR as any) = TEST_REPO_DIR;
+        (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
+        (OUTPUT_FILEPATH as any) = TEST_RESULTS_FILE;
+        (COPYLEFT_LICENSE_EXCLUDE as any) = 'GPL-2.0-only';
+
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+
+        await copyleftPolicyCheck.run();
+
+        const details = copyleftPolicyCheck.details();
+        const summary = copyleftPolicyCheck.getDescription();
+
+
+        assert.equal(details,undefined);
+
+        assert(summary !== undefined, 'Summary should not be undefined');
+        // Add your assertions here
+        assert.equal(sanitize(summary),sanitize(`### :white_check_mark: Policy Pass 
+        #### Not copyleft Licenses were found`));
+    });
+
+    it('Copyleft policy explicit licenses', async function () {
+        this.timeout(30000);
+        const TEST_DIR = __dirname;
+        const TEST_REPO_DIR = path.join(TEST_DIR, 'data');
+        const TEST_RESULTS_FILE = 'results.json';
+
+        // Set the required environment variables
+        (REPO_DIR as any) = TEST_REPO_DIR;
+        (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
+        (OUTPUT_FILEPATH as any) = TEST_RESULTS_FILE;
+        (COPYLEFT_LICENSE_EXPLICIT as any) = 'MIT,Apache-2.0';
+
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+
+        await copyleftPolicyCheck.run();
+
+        const details = copyleftPolicyCheck.details();
+        const summary = copyleftPolicyCheck.getDescription();
+
+        assert(summary !== undefined, 'Summary should not be undefined');
+        assert(details !== undefined, 'Details should not be undefined');
+
+        assert.equal(sanitize(details),sanitize(`### Copyleft licenses
+          | Component | Version | License | URL | Copyleft | 
+          | - | :-: | - | - | :-: | 
+          | pkg:npm/%40grpc/grpc-js | 1.12.2 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0.html | YES | 
+          | pkg:npm/abort-controller | 3.0.0 | MIT | https://spdx.org/licenses/MIT.html | YES | 
+          | pkg:npm/adm-zip | 0.5.16 | MIT | https://spdx.org/licenses/MIT.html | YES |
+        `));
+        // Add your assertions here
+        assert.equal(sanitize(summary),sanitize(`3 component(s) with copyleft licenses were found.`));
     });
 
 

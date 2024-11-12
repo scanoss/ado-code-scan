@@ -1,13 +1,18 @@
-### Undeclared components 
- 
-   |  Component | Version | License  |                                      
-   | - | - | - |       
-   | pkg:github/scanoss/wfp | 6afc1f6 | Zlib - GPL-2.0-only | 
- | pkg:github/scanoss/scanner.c | 1.3.3 | BSD-2-Clause | 
- | pkg:github/scanoss/engine | 4.0.4 | GPL-2.0-or-later - GPL-1.0-or-later - GPL-2.0-only |        
-  #### Add the following snippet into your `sbom.json` file 
- ```json 
- {
+### Undeclared components
+ | Component | Version | License | 
+ | - | - | - | 
+ | pkg:github/scanoss/wfp | 6afc1f6 | Zlib - GPL-2.0-only | 
+ | pkg:github/scanoss/scanner.c | 1.3.3 | BSD-2-Clause - GPL-2.0-only | 
+ | pkg:npm/%40grpc/grpc-js | 1.12.2 | Apache-2.0 | 
+ | pkg:npm/abort-controller | 3.0.0 | MIT | 
+ | pkg:npm/adm-zip | 0.5.16 | MIT | 
+
+
+5 undeclared component(s) were found.
+Add the following snippet into your `sbom.json` file
+
+```json
+{
   "components": [
     {
       "purl": "pkg:github/scanoss/wfp"
@@ -16,8 +21,15 @@
       "purl": "pkg:github/scanoss/scanner.c"
     },
     {
-      "purl": "pkg:github/scanoss/engine"
+      "purl": "pkg:npm/%40grpc/grpc-js"
+    },
+    {
+      "purl": "pkg:npm/abort-controller"
+    },
+    {
+      "purl": "pkg:npm/adm-zip"
     }
   ]
-} 
- ```
+}
+```
+

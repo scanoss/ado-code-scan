@@ -3,7 +3,28 @@ import { PR_STATUS } from '../../policies/policy-check';
 
 export class TesteableUndeclaredPolicyCheck extends UndeclaredPolicyCheck {
 
+   private summary: string | undefined;
+   private text: string | undefined;
+
    public buildCommandTestable(): string {
       return this['buildCommand']();
+   }
+
+   protected async success(summary: string, text?: string): Promise<void> {
+      this.text = text;
+      this.summary = summary;
+   }
+
+   protected async reject(summary: string, text?: string): Promise<void> {
+      this.text = text;
+      this.summary = summary;
+   }
+
+   public getDescription(){
+      return this.summary;
+   }
+
+   public details(){
+      return this.text;
    }
 }
