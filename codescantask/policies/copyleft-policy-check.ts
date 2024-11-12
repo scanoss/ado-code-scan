@@ -61,14 +61,14 @@ export class CopyleftPolicyCheck extends PolicyCheck {
         return '';
     }
 
-    private async buildCommand(): Promise<string> {
+    private buildCommand(): string {
         return `docker run -v "${REPO_DIR}:/scanoss" ${RUNTIME_CONTAINER} inspect copyleft --input ${OUTPUT_FILEPATH} ${this.buildCopyleftCommand()} --format md`;
     }
 
     async run(): Promise<void> {
         await this.start();
 
-        const dockerCommand = await this.buildCommand();
+        const dockerCommand = this.buildCommand();
 
         console.log(`Executing Docker command: ${dockerCommand}`);
         const results = tl.execSync('bash', ['-c', dockerCommand]);

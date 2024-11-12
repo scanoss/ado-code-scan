@@ -1,40 +1,81 @@
 import { TesteableCopyleftPolicyCheck } from './testeables/TesteableCopyleftPolicyCheck';
 import assert from 'assert';
-import fs from 'fs';
-import path from 'path';
-
+import {
+    COPYLEFT_LICENSE_EXCLUDE,
+    COPYLEFT_LICENSE_EXPLICIT,
+    COPYLEFT_LICENSE_INCLUDE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER,
+} from "../app.input";
+import * as sinon from "sinon";
+import * as tl from "azure-pipelines-task-lib";
 
 describe('CopyleftPolicyCheck', () => {
-    const normalize = (str:string) => str.trim().replace(/\s+/g, ' ');
 
-    it('Copyleft policy fail', async function() {
+    const defaultCopyleftLicenseExplicit = COPYLEFT_LICENSE_EXPLICIT;
+    const defaultCopyleftLicenseExclude = COPYLEFT_LICENSE_EXCLUDE;
+    const defaultCopyleftLicenseInclude = COPYLEFT_LICENSE_INCLUDE;
 
-            const copyleftPolicyCheck =  new TesteableCopyleftPolicyCheck();
-            const results = await fs.promises.readFile(path.join(__dirname,'data','results-copyleft.json'), 'utf-8' );
+    let getInputStub: sinon.SinonStub;
 
-            await copyleftPolicyCheck.run(JSON.parse(results));
 
-            const details = copyleftPolicyCheck.details();
-            const description = copyleftPolicyCheck.getDescription();
-            if(!details || !description) assert.fail();
-            assert.equal(normalize(details),normalize( '### Copyleft licenses | Component | Version | License | URL | Copyleft | | - | :-: | - | - | :-: | | pkg:github/scanoss/wfp | 6afc1f6 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | | pkg:github/scanoss/engine | 4.0.4 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES |\n'));
-            assert.equal(normalize(description),normalize('### :x: Policy Fail \n' +
-                ' #### 2 component(s) with copyleft licenses were found.  See details for more information.\n'));
+    beforeEach(function() {
+        // Create a stub for tl.getInput
+        getInputStub = sinon.stub(tl, 'getInput');
+
     });
 
-    it('Copyleft Policy Success', async function() {
+    afterEach(function() {
+        // Restore the original function
+        getInputStub.restore();
+        (COPYLEFT_LICENSE_EXPLICIT as any) = defaultCopyleftLicenseExplicit;
+        (COPYLEFT_LICENSE_EXCLUDE as any) = defaultCopyleftLicenseExclude;
+        (COPYLEFT_LICENSE_INCLUDE as any) = defaultCopyleftLicenseInclude;
+
+    });
+
+    it('Copyleft explicit test', async function() {
+        getInputStub.withArgs('licensesCopyleftExplicit').returns('MIT,Apache-2.0');
+        (COPYLEFT_LICENSE_EXPLICIT as any) = 'MIT,Apache-2.0';
+        (COPYLEFT_LICENSE_EXCLUDE as any) = 'MIT,Apache-2.0';
         const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
-        const results = await fs.promises.readFile(path.join(__dirname, 'data', 'results-non-copyleft.json'), 'utf-8');
-
-        await copyleftPolicyCheck.run(JSON.parse(results));
-
-        const details = copyleftPolicyCheck.details();
-        const description = copyleftPolicyCheck.getDescription();
-
-        assert.equal(details,undefined);
-        assert.notEqual(description,undefined);
+        const cmd = copyleftPolicyCheck.buildCopyleftCommandTesteable();
+        assert.equal(cmd,'--explicit MIT,Apache-2.0');
     });
 
+    it('Copyleft exclude test', async function() {
+        (COPYLEFT_LICENSE_EXCLUDE as any) = 'MIT,Apache-2.0';
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+        const cmd = copyleftPolicyCheck.buildCopyleftCommandTesteable();
+        assert.equal(cmd,'--exclude MIT,Apache-2.0');
+    });
+
+    it('Copyleft include test', async function() {
+        (COPYLEFT_LICENSE_INCLUDE as any) = 'MIT,Apache-2.0,LGPL-3.0-only';
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+        const cmd = copyleftPolicyCheck.buildCopyleftCommandTesteable();
+        assert.equal(cmd,'--include MIT,Apache-2.0,LGPL-3.0-only');
+    });
+
+    it('Copyleft empty parameters test', async function() {
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+        const cmd = copyleftPolicyCheck.buildCopyleftCommandTesteable();
+        assert.equal(cmd,'');
+    });
+
+    it('Copyleft empty parameters test', async function() {
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+        const cmd = copyleftPolicyCheck.buildCopyleftCommandTesteable();
+        assert.equal(cmd,'');
+    });
+
+    it('Build Command test', async function() {
+        (REPO_DIR as any) = 'repodir';
+        (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
+        (OUTPUT_FILEPATH as any) = 'results.json';
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+        const cmd = copyleftPolicyCheck.buildCommandTesteable()
+        console.log(cmd);
+        assert.equal(cmd,'docker run -v "repodir:/scanoss" ghcr.io/scanoss/scanoss-py:v1.17.5 inspect copyleft --input results.json  --format md');
+    });
 
 
 });

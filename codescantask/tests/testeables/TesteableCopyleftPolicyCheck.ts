@@ -5,28 +5,14 @@ import { POLICIES_HALT_ON_FAILURE } from '../../app.input';
 
 export class TesteableCopyleftPolicyCheck extends CopyleftPolicyCheck{
 
-    private summary: string | undefined;
-    private text: string | undefined;
-    public async updatePRStatus(state: PR_STATUS, description: string) {
-        return;
+
+    public buildCopyleftCommandTesteable(): string {
+        return this['buildCopyleftCommand']();
     }
 
-    protected async success(summary: string, text?: string): Promise<void> {
-        this.text = text;
-        this.summary = summary;
+    public buildCommandTesteable(): string {
+        return this['buildCommand']();
     }
 
-    protected async reject(summary: string, text?: string): Promise<void> {
-        this.text = text;
-        this.summary = summary;
-    }
-
-    public getDescription(){
-        return this.summary;
-    }
-
-    public details(){
-        return this.text;
-    }
 
 }

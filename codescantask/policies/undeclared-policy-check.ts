@@ -39,7 +39,7 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
     }
 
 
-    private async buildCommand(): Promise<string> {
+    private buildCommand(): string {
         return `docker run -v "${REPO_DIR}:/scanoss" ${RUNTIME_CONTAINER} inspect undeclared --input ${OUTPUT_FILEPATH}  --format md`;
     }
 
@@ -50,7 +50,7 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
     async run(): Promise<void> {
         await this.start();
 
-        const dockerCommand = await this.buildCommand();
+        const dockerCommand = this.buildCommand();
 
         console.log(`Executing Docker command: ${dockerCommand}`);
         const results = tl.execSync('bash', ['-c', dockerCommand]);
