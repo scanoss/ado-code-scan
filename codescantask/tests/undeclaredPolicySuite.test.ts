@@ -2,9 +2,8 @@ import assert from 'assert';
 import * as sinon from 'sinon';
 import * as tl from 'azure-pipelines-task-lib/task';
 import { TesteableUndeclaredPolicyCheck } from './testeables/TesteableUndeclaredPolicyCheck';
-import {COPYLEFT_LICENSE_EXPLICIT, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SBOM_FILEPATH} from '../app.input';
+import { OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SBOM_FILEPATH } from '../app.input';
 import path from "path";
-import {TesteableCopyleftPolicyCheck} from "./testeables/TesteableCopyleftPolicyCheck";
 
 const sanitize = (input: string):string => {
     return input.replace(/[ \n\r]/g, '');
@@ -28,11 +27,21 @@ describe('Undeclared Policy Check Suite', () => {
 
     it('Build Command test', function() {
         (REPO_DIR as any) = 'repodir';
-        (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
         (OUTPUT_FILEPATH as any) = 'results.json';
         const undeclaredPolicyCheck = new TesteableUndeclaredPolicyCheck();
-        const cmd = undeclaredPolicyCheck.buildCommandTestable();
-        assert.equal(cmd,'docker run -v "repodir:/scanoss" ghcr.io/scanoss/scanoss-py:v1.17.5 inspect undeclared --input results.json  --format md');
+        const cmd = undeclaredPolicyCheck.buildArgsTestable();
+        assert.deepStrictEqual(cmd, [
+            'run',
+            '-v',
+            'repodir:/scanoss',
+            RUNTIME_CONTAINER,
+            'inspect',
+            'undeclared',
+            '--input',
+            'results.json',
+            '--format',
+            'md'
+        ]);
     });
 
 
@@ -44,7 +53,6 @@ describe('Undeclared Policy Check Suite', () => {
 
         // Set the required environment variables
         (REPO_DIR as any) = TEST_REPO_DIR;
-        (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
         (OUTPUT_FILEPATH as any) = TEST_RESULTS_FILE;
 
         const undeclaredPolicyCheck = new TesteableUndeclaredPolicyCheck();
@@ -99,7 +107,6 @@ describe('Undeclared Policy Check Suite', () => {
 
         // Set the required environment variables
         (REPO_DIR as any) = TEST_REPO_DIR;
-        (RUNTIME_CONTAINER as any) = 'ghcr.io/scanoss/scanoss-py:v1.17.5';
         (OUTPUT_FILEPATH as any) = TEST_RESULTS_FILE;
 
         const undeclaredPolicyCheck = new TesteableUndeclaredPolicyCheck();

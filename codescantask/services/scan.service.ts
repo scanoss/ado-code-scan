@@ -26,7 +26,7 @@ import * as fs from 'fs';
 import {
     API_KEY,
     API_URL,
-    DEPENDENCIES_ENABLED, DEPENDENCIES_SCOPE, DEPENDENCY_SCOPE_EXCLUDE, DEPENDENCY_SCOPE_INCLUDE,
+    DEPENDENCIES_ENABLED, DEPENDENCIES_SCOPE, DEPENDENCY_SCOPE_EXCLUDE, DEPENDENCY_SCOPE_INCLUDE, EXECUTABLE,
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
     SBOM_ENABLED,
@@ -186,14 +186,14 @@ export class ScanService {
             // Check for basic configuration before running the docker container
             this.checkBasicConfig();
 
-            const dockerCommand = await this.buildCommand();
-            console.log(`Executing Docker command: ${dockerCommand}`);
+            const args = await this.buildArgs();
+            console.log(`Executing Docker command: ${args}`);
 
             const options = {
                 failOnStdErr: false,
                 ignoreReturnCode: true,
             };
-            const resultCode = await tl.execAsync('bash', ['-c', dockerCommand], options);
+            const resultCode = await tl.execAsync(EXECUTABLE, args, options);
 
             if (resultCode !== 0) {
                 console.error(`Error: Docker command failed with exit code ${resultCode}`);
@@ -231,7 +231,7 @@ export class ScanService {
 
     /**
      * @brief Builds the dependency scope command string
-     * @returns {string} The formatted dependency scope command
+     * @returns {Array<string>} The formatted dependency scope command
      *
      * @details
      * Handles three possible scope configurations:
@@ -243,7 +243,7 @@ export class ScanService {
      *
      * @note Only one dependency scope filter can be set at a time
      */
-    private dependencyScopeCommand(): string {
+    private dependencyScopeArgs(): Array<string> {
         const { dependencyScopeInclude, dependencyScopeExclude, dependencyScope } = this.options;
 
         // Count the number of non-empty values
@@ -255,53 +255,53 @@ export class ScanService {
             tl.setResult(tl.TaskResult.Failed, 'Only one dependency scope filter can be set');
         }
 
-        if (dependencyScopeExclude && dependencyScopeExclude !== '') return `--dep-scope-exc ${this.options.dependencyScopeExclude}`;
+        if (dependencyScopeExclude && dependencyScopeExclude !== '') return ['--dep-scope-exc', dependencyScopeExclude];
 
-        if (dependencyScopeInclude && dependencyScopeInclude !== '') return `--dep-scope-inc ${this.options.dependencyScopeInclude}`;
+        if (dependencyScopeInclude && dependencyScopeInclude !== '') return ['--dep-scope-inc', dependencyScopeInclude];
 
-        if (dependencyScope && dependencyScope === 'prod') return '--dep-scope prod';
+        if (dependencyScope && dependencyScope === 'prod') return ['--dep-scope', 'prod'];
 
-        if (dependencyScope && dependencyScope === 'dev') return '--dep-scope dev';
+        if (dependencyScope && dependencyScope === 'dev') return ['--dep-scope', 'dev'];
 
-        return '';
+        return [];
     }
 
     /**
      * @brief Generates the snippet-related portion of the Docker command
-     * @returns {string} The snippet command flag (-S) or empty string
+     * @returns {Array<string>} The snippet command flag (-S) or empty string
      *
      * @details
-     * Returns '-S' if snippets should be skipped, empty string otherwise
+     * Returns ["-S"] if snippets should be skipped, empty string otherwise
      */
-    private buildSnippetCommand(): string {
-        if (!this.options.skipSnippets) return '';
-        return '-S'
+    private buildSnippetArgs(): Array<string> {
+        if (!this.options.skipSnippets) return [];
+        return ["-S"];
     }
 
     /**
      * @brief Constructs the dependencies cmd
-     * @returns {string} The formatted dependencies command
+     * @returns {Array<string>} The formatted dependencies command
      *
      * @details
      * Combines dependency scanning options with scope commands.
      * Possible return values:
-     * - '--dependencies-only ${scopeCmd}'
-     * - '--dependencies ${scopeCmd}'
-     * - Empty string if no dependencies scanning is needed
+     * - [--dependencies-only, ${scopeCmd}]'
+     * - [--dependencies, ${scopeCmd}]
+     * - Empty array if no dependencies scanning is needed
      */
-    private buildDependenciesCommand(): string {
-        const dependencyScopeCmd = this.dependencyScopeCommand();
+    private buildDependenciesArgs(): Array<string> {
+        const dependencyScopeCmd = this.dependencyScopeArgs();
         if (!this.options.scanFiles && this.options.dependenciesEnabled) {
-            return `--dependencies-only ${dependencyScopeCmd}`;
+            return ['--dependencies-only', ...dependencyScopeCmd];
         } else if (this.options.dependenciesEnabled) {
-            return `--dependencies ${dependencyScopeCmd}`;
+            return ['--dependencies', ...dependencyScopeCmd];
         }
-        return '';
+        return [];
     }
 
     /**
      * @brief Assembles the complete Docker command string
-     * @returns {Promise<string>} The complete Docker command
+     * @returns {Promise<Array<string>>} The complete Docker command
      *
      * @details
      * Combines all command components:
@@ -314,8 +314,16 @@ export class ScanService {
      * - API configuration
      *
      */
-    private async buildCommand(): Promise<string> {
-       return `docker run -v "${this.options.inputFilepath}":"/scanoss" ${this.options.runtimeContainer} scan . --output ./${OUTPUT_FILEPATH} ${this.buildDependenciesCommand()} ${await this.detectSBOM()} ${this.buildSnippetCommand()} ${this.options.apiUrl ? `--apiurl ${this.options.apiUrl}` : ''} ${this.options.apiKey ? `--key ${this.options.apiKey}` : ''}`.replace(/\n/gm, ' ');
+    private async buildArgs(): Promise<Array<string>> {
+        return ['run','-v',`${this.options.inputFilepath}:/scanoss`,
+            this.options.runtimeContainer, 'scan', '.', '--output', `./${OUTPUT_FILEPATH}`,
+            ...this.buildDependenciesArgs(),
+            ...await this.detectSBOM(),
+            ...this.buildSnippetArgs(),
+            ...(this.options.apiUrl ? ['--apiurl', this.options.apiUrl]: []),
+            ...(this.options.apiKey ? ['--apiKey', this.options.apiKey.replace(/\n/gm, ' ')]: []),
+
+        ];
     }
 
     /**
@@ -341,23 +349,31 @@ export class ScanService {
      * // sbomEnabled = true, sbomFilepath = "/src/SBOM.json", sbomType = "identify"
      * // returns "--identify /src/SBOM.json"
      *
-     * @returns A command string segment for SBOM ingestion or an empty string if conditions are not met.
+     * @returns A command array segment for SBOM ingestion or an empty array if conditions are not met.
      * @private
      */
-    private async detectSBOM(): Promise<string> {
+    private async detectSBOM(): Promise<Array<string>> {
 
         // Overrides sbom file if is set
-        if (this.options.scanossSettings)
-            return `--settings ${this.options.settingsFilePath}`;
+        if (this.options.scanossSettings) {
+            try {
+                await fs.promises.access(this.options.settingsFilePath, fs.constants.F_OK);
+                return ['--settings', this.options.settingsFilePath];
+            } catch(error: any) {
+                tl.setResult(tl.TaskResult.Failed, 'A SCANOSS setting file must be provided');
+                return [];
+            }
+        }
 
-        if (!this.options.sbomEnabled || !this.options.sbomFilepath) return '';
+
+        if (!this.options.sbomEnabled || !this.options.sbomFilepath) return [];
 
         try {
             await fs.promises.access(this.options.sbomFilepath, fs.constants.F_OK);
-            return `--${this.options.sbomType?.toLowerCase()} ${this.options.sbomFilepath}`;
-        } catch (error:any) {
+            return [`--${this.options.sbomType?.toLowerCase()}`, this.options.sbomFilepath];
+        } catch (error: any) {
             tl.setResult(tl.TaskResult.Failed, error.message);
-            return '';
+            return [];
         }
     }
 

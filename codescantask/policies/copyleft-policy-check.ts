@@ -25,7 +25,7 @@ import { PolicyCheck } from './policy-check';
 import * as tl from "azure-pipelines-task-lib";
 import {
     COPYLEFT_LICENSE_EXCLUDE, COPYLEFT_LICENSE_EXPLICIT,
-    COPYLEFT_LICENSE_INCLUDE,
+    COPYLEFT_LICENSE_INCLUDE, EXECUTABLE,
     OUTPUT_FILEPATH,
     REPO_DIR,
     RUNTIME_CONTAINER
@@ -42,36 +42,41 @@ export class CopyleftPolicyCheck extends PolicyCheck {
         super(`Copyleft Policy`);
     }
 
-    private buildCopyleftCommand(){
+    private buildCopyleftArgs(): Array<string>{
         if (COPYLEFT_LICENSE_EXPLICIT) {
             tl.debug(`Explicit copyleft licenses: ${COPYLEFT_LICENSE_EXPLICIT}`);
-            return `--explicit ${COPYLEFT_LICENSE_EXPLICIT}`;
+            return ['--explicit', COPYLEFT_LICENSE_EXPLICIT];
         }
 
         if (COPYLEFT_LICENSE_INCLUDE) {
             tl.debug(`Included copyleft licenses: ${COPYLEFT_LICENSE_INCLUDE}`);
-            return `--include ${COPYLEFT_LICENSE_INCLUDE}`;
+            return ['--include', COPYLEFT_LICENSE_INCLUDE];
         }
 
         if (COPYLEFT_LICENSE_EXCLUDE) {
             tl.debug(`Excluded copyleft licenses: ${COPYLEFT_LICENSE_EXCLUDE}`);
-            return `--exclude ${COPYLEFT_LICENSE_EXCLUDE}`;
+            return ['--exclude', COPYLEFT_LICENSE_EXCLUDE];
         }
 
-        return '';
+        return [];
     }
 
-    private buildCommand(): string {
-        return `docker run -v "${REPO_DIR}:/scanoss" ${RUNTIME_CONTAINER} inspect copyleft --input ${OUTPUT_FILEPATH} ${this.buildCopyleftCommand()} --format md`;
+    private buildArgs(): Array<string> {
+        return ['run', '-v', `${REPO_DIR}:/scanoss`, RUNTIME_CONTAINER, 'inspect', 'copyleft', '--input',
+            OUTPUT_FILEPATH,
+            '--format',
+            'md',
+            ...this.buildCopyleftArgs(),
+        ];
     }
 
     async run(): Promise<void> {
         await this.start();
 
-        const dockerCommand = this.buildCommand();
+        const args = this.buildArgs();
 
-        console.log(`Executing Docker command: ${dockerCommand}`);
-        const results = tl.execSync('bash', ['-c', dockerCommand]);
+        console.log(`Executing Docker command: ${args}`);
+        const results = tl.execSync(EXECUTABLE, args);
 
         if (results.code === 1) {
             await this.success('### :white_check_mark: Policy Pass \n #### Not copyleft Licenses were found', undefined);

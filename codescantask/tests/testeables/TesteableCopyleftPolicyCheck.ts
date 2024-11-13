@@ -8,12 +8,12 @@ export class TesteableCopyleftPolicyCheck extends CopyleftPolicyCheck{
     private summary: string | undefined;
     private text: string | undefined;
 
-    public buildCopyleftCommandTesteable(): string {
-        return this['buildCopyleftCommand']();
+    public buildCopyleftArgsTesteable(): Array<string> {
+        return this['buildCopyleftArgs']();
     }
 
-    public buildCommandTesteable(): string {
-        return this['buildCommand']();
+    public buildArgsTesteable(): Array<string> {
+        return this['buildArgs']();
     }
 
     protected async success(summary: string, text?: string): Promise<void> {

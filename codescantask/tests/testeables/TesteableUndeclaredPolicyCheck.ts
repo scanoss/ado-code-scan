@@ -6,8 +6,8 @@ export class TesteableUndeclaredPolicyCheck extends UndeclaredPolicyCheck {
    private summary: string | undefined;
    private text: string | undefined;
 
-   public buildCommandTestable(): string {
-      return this['buildCommand']();
+   public buildArgsTestable(): Array<string> {
+      return this['buildArgs']();
    }
 
    protected async success(summary: string, text?: string): Promise<void> {

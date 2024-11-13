@@ -22,7 +22,7 @@
  */
 
 import { PolicyCheck } from './policy-check';
-import {OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER } from '../app.input';
+import {EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER} from '../app.input';
 import * as tl from 'azure-pipelines-task-lib';
 
 /**
@@ -39,8 +39,9 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
     }
 
 
-    private buildCommand(): string {
-        return `docker run -v "${REPO_DIR}:/scanoss" ${RUNTIME_CONTAINER} inspect undeclared --input ${OUTPUT_FILEPATH}  --format md`;
+    private buildArgs(): Array<string> {
+        return ['run', '-v', `${REPO_DIR}:/scanoss`, RUNTIME_CONTAINER, 'inspect', 'undeclared', '--input',
+            OUTPUT_FILEPATH, '--format', 'md'];
     }
 
     private getResults(details: string, summary:string) {
@@ -50,10 +51,10 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
     async run(): Promise<void> {
         await this.start();
 
-        const dockerCommand = this.buildCommand();
+        const args = this.buildArgs();
 
-        console.log(`Executing Docker command: ${dockerCommand}`);
-        const results = tl.execSync('bash', ['-c', dockerCommand]);
+        console.log(`Executing Docker command: ${args}`);
+        const results = tl.execSync(EXECUTABLE, args);
 
         if (results.code === 1) {
             await this.success('### :white_check_mark: Policy Pass \n #### Not undeclared components were found', undefined);
