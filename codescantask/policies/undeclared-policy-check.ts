@@ -22,7 +22,7 @@
  */
 
 import { PolicyCheck } from './policy-check';
-import {EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER} from '../app.input';
+import {EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SCANOSS_SETTINGS} from '../app.input';
 import * as tl from 'azure-pipelines-task-lib';
 
 /**
@@ -41,7 +41,9 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
 
     private buildArgs(): Array<string> {
         return ['run', '-v', `${REPO_DIR}:/scanoss`, RUNTIME_CONTAINER, 'inspect', 'undeclared', '--input',
-            OUTPUT_FILEPATH, '--format', 'md'];
+            OUTPUT_FILEPATH, '--format', 'md',
+            ...(!SCANOSS_SETTINGS ? ['--sbom-format', 'legacy']: []) // Sets sbom format output to legacy if SCANOSS_SETTINGS is not true
+        ];
     }
 
     private getResults(details: string, summary:string) {
