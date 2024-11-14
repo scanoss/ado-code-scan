@@ -145,6 +145,7 @@ export interface Options {
 
 export class ScanService {
     private options: Options;
+    public readonly DEFAULT_SETTING_FILE_PATH = "scanoss.json";
     constructor(options?: Options) {
         this.options = options || {
             apiKey: API_KEY,
@@ -360,7 +361,13 @@ export class ScanService {
                 await fs.promises.access(this.options.settingsFilePath, fs.constants.F_OK);
                 return ['--settings', this.options.settingsFilePath];
             } catch(error: any) {
-                tl.setResult(tl.TaskResult.Failed, 'A SCANOSS setting file must be provided');
+                if (this.options.settingsFilePath === this.DEFAULT_SETTING_FILE_PATH)
+                    return [];
+                tl.setResult(
+                    tl.TaskResult.SucceededWithIssues,
+                    `SCANOSS settings file not found at '${this.options.settingsFilePath}'. Please provide a valid
+                     SCANOSS settings file path.`
+                );
                 return [];
             }
         }

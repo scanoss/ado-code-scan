@@ -110,6 +110,7 @@ describe('ScanService', function () {
         assert.notDeepStrictEqual(command,'')
     });
 
+
     it('Should scan dependencies', async function () {
         this.timeout(30000);
         (OUTPUT_FILEPATH as any) = 'test-results.json';

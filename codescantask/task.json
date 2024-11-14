@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 21,
-    "Patch": 17
+    "Patch": 21
   },
   "inputs": [
     {
@@ -161,7 +161,7 @@
       "name": "scanossSettings",
       "type": "boolean",
       "label": " Settings file to use for scanning.",
-      "defaultValue": false,
+      "defaultValue": true,
       "required": false,
       "helpMarkDown": " Settings file to use for scanning."
     },
