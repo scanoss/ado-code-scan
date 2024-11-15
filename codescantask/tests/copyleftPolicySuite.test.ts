@@ -44,6 +44,19 @@ describe('CopyleftPolicyCheck', () => {
 
     let getInputStub: sinon.SinonStub;
 
+    before(async function() {
+        // Increase timeout if needed
+        this.timeout(30000);
+
+        try {
+            console.log("PULLING DOCKER IMAGE");
+            await tl.execAsync('docker',['pull',RUNTIME_CONTAINER]);
+        } catch (error) {
+            console.error('Failed to pull Docker image:', error);
+            throw error;
+        }
+    });
+
     beforeEach(function() {
         // Create a stub for tl.getInput
         getInputStub = sinon.stub(tl, 'getInput');
