@@ -46,11 +46,6 @@ To streamline the app versioning process for development:
 
 1. Update the version in the **package.json** file.
 
-2. Execute the following command to apply the version upgrade and build the app:
-```bash
-make upgrade_version_dev
-```
-
 ### Building the App for Development
 
 To build the app for a development environment:

@@ -1,10 +1,10 @@
-.PHONY: build test upgrade_version_dev upgrade_version package package_dev install package_dev_mac_arm64
+.PHONY: build test .upgrade_version_dev upgrade_version package package_dev install package_dev_mac_arm64
 
 
 install:
 	cd codescantask && npm install
 
-upgrade_version_dev:
+.upgrade_version_dev:
 	./tools/version.sh dev
 
 upgrade_version:
@@ -16,7 +16,7 @@ build:install
 package:build
 	tfx extension create --manifest-globs vss-extension.json vss
 
-package_dev:build
+package_dev:.upgrade_version_dev build
 	tfx extension create --manifest-globs vss-extension-dev.json vss
 
 package_dev_mac_arm64:package_dev
@@ -31,8 +31,6 @@ package_dev_mac_arm64:package_dev
 	mv "$$LATEST_VSIX.fixed" "$$LATEST_VSIX"; \
 	rm -rf "$$TMPDIR"; \
 	echo "Fixed ContentType in $$LATEST_VSIX"
-
-
 
 test:
 	cd codescantask && npm run test

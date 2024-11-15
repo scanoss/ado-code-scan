@@ -1,3 +1,26 @@
+// SPDX-License-Identifier: MIT
+/*
+   Copyright (c) 2024, SCANOSS
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   THE SOFTWARE.
+ */
+
 import assert from 'assert';
 import * as sinon from 'sinon';
 import * as tl from 'azure-pipelines-task-lib/task';
@@ -88,37 +111,9 @@ describe('Undeclared Policy Check Suite', () => {
         assert(summary !== undefined, 'Summary should not be undefined');
         assert(details !== undefined, 'Details should not be undefined');
 
-        assert.equal(sanitize(details),sanitize(`### Undeclared components
-         | Component | Version | License | 
-         | - | - | - | 
-         | pkg:github/scanoss/wfp | 6afc1f6 | Zlib - GPL-2.0-only | 
-         | pkg:github/scanoss/scanner.c | 1.3.3 | BSD-2-Clause - GPL-2.0-only | 
-         | pkg:npm/%40grpc/grpc-js | 1.12.2 | Apache-2.0 | 
-         | pkg:npm/abort-controller | 3.0.0 | MIT | 
-         | pkg:npm/adm-zip | 0.5.16 | MIT | 5 undeclared component(s) were found.
-        Add the following snippet into your \`sbom.json\` file
-        
-        \`\`\`json
-        {
-          "components": [
-            {
-              "purl": "pkg:github/scanoss/wfp"
-            },
-            {
-              "purl": "pkg:github/scanoss/scanner.c"
-            },
-            {
-              "purl": "pkg:npm/%40grpc/grpc-js"
-            },
-            {
-              "purl": "pkg:npm/abort-controller"
-            },
-            {
-              "purl": "pkg:npm/adm-zip"
-            }
-          ]
-        }
-        \`\`\``));
+        console.log(details);
+
+        assert.equal(sanitize(details),sanitize(`###Undeclaredcomponents|Component|Version|License||-|-|-||pkg:github/scanoss/wfp|6afc1f6|Zlib-GPL-2.0-only||pkg:github/scanoss/scanner.c|1.3.3|BSD-2-Clause-GPL-2.0-only||pkg:npm/%40grpc/grpc-js|1.12.2|Apache-2.0||pkg:npm/abort-controller|3.0.0|MIT||pkg:npm/adm-zip|0.5.16|MIT|5undeclaredcomponent(s)werefound.Addthefollowingsnippetintoyour\`scanoss.json\`file\`\`\`json{"bom":{"include":[{"purl":"pkg:github/scanoss/wfp"},{"purl":"pkg:github/scanoss/scanner.c"},{"purl":"pkg:npm/%40grpc/grpc-js"},{"purl":"pkg:npm/abort-controller"},{"purl":"pkg:npm/adm-zip"}]}}\`\`\``));
     });
 
     it('Undeclared component policy success', async function () {
