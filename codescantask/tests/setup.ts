@@ -21,24 +21,18 @@
    THE SOFTWARE.
  */
 
-export const generateTable = (headers: string[], rows: string[][], centeredColumns?: number[]): string => {
-    const COL_SEP = ' | ';
-    const centeredColumnMapper: Set<number> = new Set<number>();
-    if (centeredColumns) centeredColumns.forEach(c => centeredColumnMapper.add(c));
+import {RUNTIME_CONTAINER} from "../app.input";
+import * as tl from "azure-pipelines-task-lib";
 
-    const rowSeparator =
-        COL_SEP +
-        headers
-            .map((header, index) => {
-                if (!centeredColumns) return '-';
-                return centeredColumnMapper.has(index) ? ':-:' : '-';
-            })
-            .join(COL_SEP) +
-        COL_SEP;
-
-    return `
-  ${COL_SEP} ${headers.join(COL_SEP)} ${COL_SEP}                                     
-  ${rowSeparator}      
-  ${rows.map(row => COL_SEP + row.join(COL_SEP) + COL_SEP).join('\n')}       
-  `;
+export const mochaHooks = {
+    beforeAll: async function(this: Mocha.Context) {
+        this.timeout(120000);
+        try {
+            console.log("PULLING DOCKER IMAGE");
+            await tl.execAsync('docker', ['pull', RUNTIME_CONTAINER]);
+        } catch (error) {
+            console.error('Failed to pull Docker image:', error);
+            throw error;
+        }
+    }
 };

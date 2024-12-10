@@ -46,11 +46,6 @@ To streamline the app versioning process for development:
 
 1. Update the version in the **package.json** file.
 
-2. Execute the following command to apply the version upgrade and build the app:
-```bash
-make upgrade_version_dev
-```
-
 ### Building the App for Development
 
 To build the app for a development environment:
@@ -58,6 +53,14 @@ To build the app for a development environment:
 ```bash
 make package_dev
 ```
+
+### macOS (ARM64) Building for Development 
+For macOS users with ARM64 architecture, run the following command:
+```bash
+make package_dev_mac_arm64
+```
+For more details see the following [issue](https://github.com/microsoft/tfs-cli/issues/414).
+
 
 ### Publish the App to Development
 
