@@ -132,7 +132,7 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 The SCANOSS Code Scan Task includes two configurable policies:
 
 1. Copyleft: This policy checks if any component or code snippet is associated with a copyleft license. If such a
-   license is detected, the pull request (PR) is rejected. The default list of Copyleft licenses is defined in the following [file](https://github.com/scanoss/ado-code-scan/blob/main/src/utils/license.utils.ts).
+   license is detected, the pull request (PR) is rejected. The default list of Copyleft licenses is defined in the following [file](https://github.com/scanoss/ado-code-scan/blob/1218c4fe2dcda5f807b505e271096b1ec0afd8a9/codescantask/utils/license.utils.ts#L4).
 
 2. Undeclared: This policy compares the components detected in the repository against those declared in the sbom.json
    file (customizable through the sbom.filepath parameter). If there are undeclared components, the PR is rejected.
