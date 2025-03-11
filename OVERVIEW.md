@@ -74,12 +74,10 @@ steps:
     inputs:
      # apiKey: $(APIKEY)
      # apiUrl: 'https://api.scanoss.com/scan/direct'
-      sbomFilepath: SBOM.json
       policies: copyleft,undeclared
       policiesHaltOnFailure: false
       dependenciesEnabled: true
       dependenciesScope: prod 
-      licensesCopyleftInclude: AGPL-1.0-or-later, AGPL-1.0-only
 
    
 ```
@@ -122,7 +120,7 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                                                                                      | Optional     | `true`                               |
 | apiUrl                   | SCANOSS API URL                                                                                                                                          | Optional     | `https://api.osskb.org/scan/direct`  |
 | apiKey                   | SCANOSS API Key                                                                                                                                          | Optional     | -                                    |
-| runtimeContainer         | Runtime URL                                                                                                                                              | Optional     | `ghcr.io/scanoss/scanoss-py:v1.18.0` |
+| runtimeContainer         | Runtime URL                                                                                                                                              | Optional     | `ghcr.io/scanoss/scanoss-py:v1.20.4` |
 | licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list.                                                     | Optional     | -                                    |
 | licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.                                                       | Optional     | -                                    |
 | licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.                                                              | Optional     | -                                    |
@@ -138,8 +136,8 @@ The SCANOSS Code Scan Task includes two configurable policies:
 1. Copyleft: This policy checks if any component or code snippet is associated with a copyleft license. If such a
    license is detected, the pull request (PR) is rejected. The default list of Copyleft licenses is defined in the following [file](https://github.com/scanoss/ado-code-scan/blob/1218c4fe2dcda5f807b505e271096b1ec0afd8a9/codescantask/utils/license.utils.ts#L4).
 
-2. Undeclared: This policy compares the components detected in the repository against those declared in the sbom.json
-   file (customizable through the sbom.filepath parameter). If there are undeclared components, the PR is rejected.
+2. Undeclared: This policy compares the components detected in the repository against those declared in the scanoss.json
+   file. If there are undeclared components, the PR is rejected.
 
 Additionally, if it is a Pull Request, a comment with a summary of the report will be automatically generated.
 
