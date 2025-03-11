@@ -322,7 +322,7 @@ export class ScanService {
             ...await this.detectSBOM(),
             ...this.buildSnippetArgs(),
             ...(this.options.apiUrl ? ['--apiurl', this.options.apiUrl]: []),
-            ...(this.options.apiKey ? ['--apiKey', this.options.apiKey.replace(/\n/gm, ' ')]: []),
+            ...(this.options.apiKey ? ['--key', this.options.apiKey.replace(/\n/gm, ' ')]: []),
 
         ];
     }
