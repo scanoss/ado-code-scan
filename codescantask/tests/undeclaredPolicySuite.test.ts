@@ -25,7 +25,7 @@ import assert from 'assert';
 import * as sinon from 'sinon';
 import * as tl from 'azure-pipelines-task-lib/task';
 import { TesteableUndeclaredPolicyCheck } from './testeables/TesteableUndeclaredPolicyCheck';
-import {OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SBOM_FILEPATH, SCANOSS_SETTINGS} from '../app.input';
+import {DEBUG, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SBOM_FILEPATH, SCANOSS_SETTINGS} from '../app.input';
 import path from "path";
 
 const sanitize = (input: string):string => {
@@ -139,5 +139,28 @@ describe('Undeclared Policy Check Suite', () => {
 
         assert.equal(sanitize(summary),sanitize(`### :white_check_mark: Policy Pass 
         #### Not undeclared components were found`));
+    });
+    
+    it("should add '--debug' flag to build arguments when DEBUG is enabled", function() {
+        (REPO_DIR as any) = 'repodir';
+        (OUTPUT_FILEPATH as any) = 'results.json';
+        (DEBUG as any) = true;
+        const undeclaredPolicyCheck = new TesteableUndeclaredPolicyCheck();
+        const cmd = undeclaredPolicyCheck.buildArgsTestable();
+        assert.deepStrictEqual(cmd, [
+            'run',
+            '-v',
+            'repodir:/scanoss',
+            RUNTIME_CONTAINER,
+            'inspect',
+            'undeclared',
+            '--input',
+            'results.json',
+            '--format',
+            'md',
+            '--sbom-format',
+            'legacy',
+            '--debug'
+        ]);
     });
 });
