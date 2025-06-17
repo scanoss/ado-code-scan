@@ -43,3 +43,4 @@ export const SCAN_FILES = tl.getInput('scanFiles') === 'true';
 export const SCANOSS_SETTINGS = tl.getInput('scanossSettings') === 'true';
 export const SETTINGS_FILE_PATH = tl.getInput('settingsFilepath') || 'scanoss.json';
 export const EXECUTABLE = 'docker';
+export const DEBUG = tl.getInput('debug') === 'true';
