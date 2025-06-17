@@ -163,4 +163,35 @@ describe('ScanService', function () {
         await fs.promises.rm(resultPath)
     });
 
+it('should add --debug flag to command arguments when debug option is enabled', async function() {
+    const scanService = new ScanService({
+        outputFilepath: 'results.json',
+        inputFilepath: 'inputFilepath',
+        runtimeContainer: RUNTIME_CONTAINER,
+        dependencyScopeInclude: '',
+        dependencyScopeExclude: '',
+        dependenciesEnabled: true,
+        sbomEnabled: false,
+        scanFiles: true,
+        skipSnippets: false,
+        settingsFilePath: 'scanoss.json',
+        scanossSettings: false,
+        debug: true
+    });
+
+    const args = await (scanService as any).buildArgs();
+
+    assert.deepStrictEqual(args,[
+        "run",
+        "-v",
+        "inputFilepath:/scanoss",
+        RUNTIME_CONTAINER,
+        "scan",
+        ".",
+        "--output",
+        "./results.json",
+        "--dependencies",
+        "--debug"
+    ]);
+  })
 });

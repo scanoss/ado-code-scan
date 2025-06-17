@@ -214,4 +214,23 @@ describe('CopyleftPolicyCheck', () => {
         // Add your assertions here
         assert.equal(sanitize(summary),sanitize(`3 component(s) with copyleft licenses were found.`));
     });
+
+    it('Build Command test', async function() {
+        (REPO_DIR as any) = 'repodir';
+        (OUTPUT_FILEPATH as any) = 'results.json';
+        const copyleftPolicyCheck = new TesteableCopyleftPolicyCheck();
+        const cmd = copyleftPolicyCheck.buildArgsTesteable();
+        assert.deepStrictEqual(cmd,[
+            'run',
+            '-v',
+            'repodir:/scanoss',
+            RUNTIME_CONTAINER,
+            'inspect',
+            'copyleft',
+            '--input',
+            'results.json',
+            '--format',
+            'md'
+        ]);
+    });
 });
