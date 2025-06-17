@@ -172,6 +172,14 @@
       "defaultValue": "scanoss.json",
       "required": false,
       "helpMarkDown": "SCANOSS settings file path."
+    },
+    {
+      "name": "debug",
+      "type": "boolean",
+      "label": "Enable runtime container debugging",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Enable runtime container debugging"
     }
   ],
   "execution": {

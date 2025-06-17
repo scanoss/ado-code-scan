@@ -25,7 +25,7 @@ import * as tl from 'azure-pipelines-task-lib/task';
 import * as fs from 'fs';
 import {
     API_KEY,
-    API_URL,
+    API_URL, DEBUG,
     DEPENDENCIES_ENABLED, DEPENDENCIES_SCOPE, DEPENDENCY_SCOPE_EXCLUDE, DEPENDENCY_SCOPE_INCLUDE, EXECUTABLE,
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
@@ -111,6 +111,11 @@ export interface Options {
      */
     settingsFilePath: string;
 
+    /**
+     * Debug mode. Default [false]
+     */
+    debug: boolean;
+
 }
 
 /**
@@ -137,6 +142,7 @@ export interface Options {
  * @property {string} options.dependencyScopeInclude - Dependencies to include in scan
  * @property {boolean} options.skipSnippets - Flag to skip snippet scanning
  * @property {boolean} options.scanFiles - Flag to enable file scanning
+ * @property {boolean} options.debug - Flag to enable debugging
  *
  * @throws {Error} When required configuration options are missing or invalid
  *
@@ -163,7 +169,8 @@ export class ScanService {
             skipSnippets: SKIP_SNIPPETS,
             scanFiles: SCAN_FILES,
             scanossSettings: SCANOSS_SETTINGS,
-            settingsFilePath: SETTINGS_FILE_PATH
+            settingsFilePath: SETTINGS_FILE_PATH,
+            debug: DEBUG
         };
     }
 
@@ -323,7 +330,7 @@ export class ScanService {
             ...this.buildSnippetArgs(),
             ...(this.options.apiUrl ? ['--apiurl', this.options.apiUrl]: []),
             ...(this.options.apiKey ? ['--key', this.options.apiKey.replace(/\n/gm, ' ')]: []),
-
+            ...(this.options.debug ? ['--debug']: [])
         ];
     }
 

@@ -42,6 +42,7 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -63,6 +64,7 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -83,6 +85,7 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -103,6 +106,7 @@ describe('ScanService', function () {
             skipSnippets: true,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -123,6 +127,7 @@ describe('ScanService', function () {
             skipSnippets: true,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -149,6 +154,7 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: 'scanoss.json',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
