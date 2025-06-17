@@ -113,7 +113,7 @@ describe('Undeclared Policy Check Suite', () => {
 
         console.log(details);
 
-        assert.equal(sanitize(details),sanitize(`###Undeclaredcomponents|Component|Version|License||-|-|-||pkg:github/scanoss/wfp|6afc1f6|Zlib-GPL-2.0-only||pkg:github/scanoss/scanner.c|1.3.3|BSD-2-Clause-GPL-2.0-only|2undeclaredcomponent(s)werefound.Addthefollowingsnippetintoyour\`scanoss.json\`file\`\`\`json{"bom":{"include":[{"purl":"pkg:github/scanoss/wfp"},{"purl":"pkg:github/scanoss/scanner.c"}]}}\`\`\``));
+        assert.equal(sanitize(details),sanitize(`###Undeclaredcomponents|Component|License||-|-||pkg:github/scanoss/wfp|GPL-2.0-only||pkg:github/scanoss/scanner.c|GPL-2.0-only|2undeclaredcomponent(s)werefound.Addthefollowingsnippetintoyour\`scanoss.json\`file\`\`\`json{"bom":{"include":[{"purl":"pkg:github/scanoss/wfp"},{"purl":"pkg:github/scanoss/scanner.c"}]}}\`\`\``));
     });
 
     it('Undeclared component policy success', async function () {
@@ -158,8 +158,6 @@ describe('Undeclared Policy Check Suite', () => {
             'results.json',
             '--format',
             'md',
-            '--sbom-format',
-            'legacy',
             '--debug'
         ]);
     });

@@ -146,10 +146,10 @@ describe('CopyleftPolicyCheck', () => {
         assert(summary !== undefined, 'Summary should not be undefined');
 
         assert.equal(sanitize(details),sanitize(`### Copyleft licenses
-         | Component | Version | License | URL | Copyleft | 
-         | - | :-: | - | - | :-: | 
-         | pkg:github/scanoss/wfp | 6afc1f6 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | 
-         | pkg:github/scanoss/scanner.c | 1.3.3 | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | 
+         | Component | License | URL | Copyleft | 
+         |-|:-:|-|-| 
+         | pkg:github/scanoss/wfp | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | 
+         | pkg:github/scanoss/scanner.c | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | 
         `));
         // Add your assertions here
         assert.equal(sanitize(summary),sanitize(`2 component(s) with copyleft licenses were found.`));
@@ -205,11 +205,11 @@ describe('CopyleftPolicyCheck', () => {
         assert(details !== undefined, 'Details should not be undefined');
 
         assert.equal(sanitize(details),sanitize(`### Copyleft licenses
-          | Component | Version | License | URL | Copyleft | 
-          | - | :-: | - | - | :-: | 
-          | pkg:npm/%40grpc/grpc-js | 1.12.2 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0.html | YES | 
-          | pkg:npm/abort-controller | 3.0.0 | MIT | https://spdx.org/licenses/MIT.html | YES | 
-          | pkg:npm/adm-zip | 0.5.16 | MIT | https://spdx.org/licenses/MIT.html | YES |
+          | Component | License | URL | Copyleft | 
+          |-|:-:|-|-| 
+          | pkg:npm/%40grpc/grpc-js | Apache-2.0 | https://spdx.org/licenses/Apache-2.0.html | YES | 
+          | pkg:npm/abort-controller | MIT | https://spdx.org/licenses/MIT.html | YES | 
+          | pkg:npm/adm-zip | MIT | https://spdx.org/licenses/MIT.html | YES |
         `));
         // Add your assertions here
         assert.equal(sanitize(summary),sanitize(`3 component(s) with copyleft licenses were found.`));
