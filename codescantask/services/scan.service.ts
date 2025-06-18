@@ -29,27 +29,11 @@ import {
     DEPENDENCIES_ENABLED, DEPENDENCIES_SCOPE, DEPENDENCY_SCOPE_EXCLUDE, DEPENDENCY_SCOPE_INCLUDE, EXECUTABLE,
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
-    SBOM_ENABLED,
-    SBOM_FILEPATH, SBOM_TYPE, SCAN_FILES, SCANOSS_SETTINGS, SETTINGS_FILE_PATH, SKIP_SNIPPETS
+    SCAN_FILES, SCANOSS_SETTINGS, SETTINGS_FILE_PATH, SKIP_SNIPPETS
 } from '../app.input';
 import { ScannerResults } from './result.interface';
 import path from 'path';
 export interface Options {
-    /**
-     * Whether SBOM ingestion is enabled. Optional.
-     */
-    sbomEnabled?: boolean;
-
-    /**
-     * Specifies the SBOM processing type: "identify" or "ignore". Optional.
-     */
-    sbomType?: string;
-
-    /**
-     * Absolute path to the SBOM file. Required if sbomEnabled is set to true.
-     */
-    sbomFilepath?: string;
-
     /**
      * Enables scanning for dependencies, utilizing scancode internally. Optional.
      */
@@ -130,9 +114,6 @@ export interface Options {
  * @property {Options} options - Configuration options for the scanner
  * @property {string} options.apiKey - API key for SCANOSS service authentication
  * @property {string} options.apiUrl - URL endpoint for the SCANOSS service
- * @property {boolean} options.sbomEnabled - Flag to enable SBOM generation
- * @property {string} options.sbomFilepath - Path to store or read SBOM files
- * @property {string} options.sbomType - Type of SBOM format to use
  * @property {boolean} options.dependenciesEnabled - Flag to enable dependency scanning
  * @property {string} options.outputFilepath - Path for scan results output
  * @property {string} options.inputFilepath - Path to the repository to scan
@@ -156,9 +137,6 @@ export class ScanService {
         this.options = options || {
             apiKey: API_KEY,
             apiUrl: API_URL,
-            sbomEnabled: SBOM_ENABLED,
-            sbomFilepath: SBOM_FILEPATH,
-            sbomType: SBOM_TYPE,
             dependenciesEnabled: DEPENDENCIES_ENABLED,
             outputFilepath: path.join(tl.getVariable('Build.Repository.LocalPath') || '' , OUTPUT_FILEPATH),
             inputFilepath: REPO_DIR,
@@ -378,17 +356,7 @@ export class ScanService {
                 return [];
             }
         }
-
-
-        if (!this.options.sbomEnabled || !this.options.sbomFilepath) return [];
-
-        try {
-            await fs.promises.access(this.options.sbomFilepath, fs.constants.F_OK);
-            return [`--${this.options.sbomType?.toLowerCase()}`, this.options.sbomFilepath];
-        } catch (error: any) {
-            tl.setResult(tl.TaskResult.Failed, error.message);
-            return [];
-        }
+        return [];
     }
 
     private async parseResult(): Promise<ScannerResults> {

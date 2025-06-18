@@ -62,30 +62,6 @@
       "helpMarkDown": "Specify the API URL."
     },
     {
-      "name": "sbomEnabled",
-      "type": "boolean",
-      "label": "SBOM Enabled",
-      "defaultValue": "false",
-      "required": false,
-      "helpMarkDown": "Specify whether SBOM is enabled."
-    },
-    {
-      "name": "sbomFilepath",
-      "type": "string",
-      "label": "SBOM Filepath",
-      "defaultValue": "sbom.json",
-      "required": false,
-      "helpMarkDown": "Specify the SBOM filepath."
-    },
-    {
-      "name": "sbomType",
-      "type": "string",
-      "label": "SBOM Type",
-      "defaultValue": "identify",
-      "required": false,
-      "helpMarkDown": "Specify the SBOM type."
-    },
-    {
       "name": "policies",
       "type": "string",
       "label": "policies",

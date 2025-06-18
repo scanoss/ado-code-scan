@@ -25,7 +25,7 @@ import assert from 'assert';
 import * as sinon from 'sinon';
 import * as tl from 'azure-pipelines-task-lib/task';
 import { TesteableUndeclaredPolicyCheck } from './testeables/TesteableUndeclaredPolicyCheck';
-import {DEBUG, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SBOM_FILEPATH, SCANOSS_SETTINGS} from '../app.input';
+import {DEBUG, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SCANOSS_SETTINGS} from '../app.input';
 import path from "path";
 
 const sanitize = (input: string):string => {
@@ -33,7 +33,6 @@ const sanitize = (input: string):string => {
 }
 
 describe('Undeclared Policy Check Suite', () => {
-    const originalFilepath = SBOM_FILEPATH;
     let getInputStub: sinon.SinonStub;
 
     beforeEach(function() {
@@ -45,7 +44,6 @@ describe('Undeclared Policy Check Suite', () => {
     afterEach(function() {
         // Restore the original function
         getInputStub.restore();
-        (SBOM_FILEPATH as any) = originalFilepath;
     });
 
     it('Build Command test', function() {
