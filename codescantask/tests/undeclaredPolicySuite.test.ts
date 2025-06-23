@@ -25,7 +25,7 @@ import assert from 'assert';
 import * as sinon from 'sinon';
 import * as tl from 'azure-pipelines-task-lib/task';
 import { TesteableUndeclaredPolicyCheck } from './testeables/TesteableUndeclaredPolicyCheck';
-import {OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SBOM_FILEPATH, SCANOSS_SETTINGS} from '../app.input';
+import {DEBUG, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SCANOSS_SETTINGS} from '../app.input';
 import path from "path";
 
 const sanitize = (input: string):string => {
@@ -33,7 +33,6 @@ const sanitize = (input: string):string => {
 }
 
 describe('Undeclared Policy Check Suite', () => {
-    const originalFilepath = SBOM_FILEPATH;
     let getInputStub: sinon.SinonStub;
 
     beforeEach(function() {
@@ -45,7 +44,6 @@ describe('Undeclared Policy Check Suite', () => {
     afterEach(function() {
         // Restore the original function
         getInputStub.restore();
-        (SBOM_FILEPATH as any) = originalFilepath;
     });
 
     it('Build Command test', function() {
@@ -113,7 +111,7 @@ describe('Undeclared Policy Check Suite', () => {
 
         console.log(details);
 
-        assert.equal(sanitize(details),sanitize(`###Undeclaredcomponents|Component|Version|License||-|-|-||pkg:github/scanoss/wfp|6afc1f6|Zlib-GPL-2.0-only||pkg:github/scanoss/scanner.c|1.3.3|BSD-2-Clause-GPL-2.0-only||pkg:npm/%40grpc/grpc-js|1.12.2|Apache-2.0||pkg:npm/abort-controller|3.0.0|MIT||pkg:npm/adm-zip|0.5.16|MIT|5undeclaredcomponent(s)werefound.Addthefollowingsnippetintoyour\`scanoss.json\`file\`\`\`json{"bom":{"include":[{"purl":"pkg:github/scanoss/wfp"},{"purl":"pkg:github/scanoss/scanner.c"},{"purl":"pkg:npm/%40grpc/grpc-js"},{"purl":"pkg:npm/abort-controller"},{"purl":"pkg:npm/adm-zip"}]}}\`\`\``));
+        assert.equal(sanitize(details),sanitize(`###Undeclaredcomponents|Component|License||-|-||pkg:github/scanoss/wfp|GPL-2.0-only||pkg:github/scanoss/scanner.c|GPL-2.0-only|2undeclaredcomponent(s)werefound.Addthefollowingsnippetintoyour\`scanoss.json\`file\`\`\`json{"bom":{"include":[{"purl":"pkg:github/scanoss/wfp"},{"purl":"pkg:github/scanoss/scanner.c"}]}}\`\`\``));
     });
 
     it('Undeclared component policy success', async function () {
@@ -139,5 +137,26 @@ describe('Undeclared Policy Check Suite', () => {
 
         assert.equal(sanitize(summary),sanitize(`### :white_check_mark: Policy Pass 
         #### Not undeclared components were found`));
+    });
+    
+    it("should add '--debug' flag to build arguments when DEBUG is enabled", function() {
+        (REPO_DIR as any) = 'repodir';
+        (OUTPUT_FILEPATH as any) = 'results.json';
+        (DEBUG as any) = true;
+        const undeclaredPolicyCheck = new TesteableUndeclaredPolicyCheck();
+        const cmd = undeclaredPolicyCheck.buildArgsTestable();
+        assert.deepStrictEqual(cmd, [
+            'run',
+            '-v',
+            'repodir:/scanoss',
+            RUNTIME_CONTAINER,
+            'inspect',
+            'undeclared',
+            '--input',
+            'results.json',
+            '--format',
+            'md',
+            '--debug'
+        ]);
     });
 });

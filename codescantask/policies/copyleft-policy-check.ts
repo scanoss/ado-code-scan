@@ -25,7 +25,7 @@ import { PolicyCheck } from './policy-check';
 import * as tl from "azure-pipelines-task-lib";
 import {
     COPYLEFT_LICENSE_EXCLUDE, COPYLEFT_LICENSE_EXPLICIT,
-    COPYLEFT_LICENSE_INCLUDE, EXECUTABLE,
+    COPYLEFT_LICENSE_INCLUDE, DEBUG, EXECUTABLE,
     OUTPUT_FILEPATH,
     REPO_DIR,
     RUNTIME_CONTAINER
@@ -67,6 +67,7 @@ export class CopyleftPolicyCheck extends PolicyCheck {
             '--format',
             'md',
             ...this.buildCopyleftArgs(),
+            ...(DEBUG ? ['--debug'] : [])
         ];
     }
 

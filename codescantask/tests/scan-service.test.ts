@@ -42,6 +42,7 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -63,6 +64,7 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -83,6 +85,7 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -103,6 +106,7 @@ describe('ScanService', function () {
             skipSnippets: true,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -123,6 +127,7 @@ describe('ScanService', function () {
             skipSnippets: true,
             settingsFilePath: '',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -144,11 +149,11 @@ describe('ScanService', function () {
             dependencyScopeInclude: '',
             dependencyScopeExclude: '',
             dependenciesEnabled: true,
-            sbomEnabled:false,
             scanFiles: true,
             skipSnippets: false,
             settingsFilePath: 'scanoss.json',
             scanossSettings: false,
+            debug: false
         });
 
         // Accessing the private method by bypassing TypeScript type checks
@@ -157,4 +162,23 @@ describe('ScanService', function () {
         await fs.promises.rm(resultPath)
     });
 
+it('should add --debug flag to command arguments when debug option is enabled', async function() {
+    (OUTPUT_FILEPATH as any) = 'results.json';
+    const scanService = new ScanService({
+        outputFilepath: OUTPUT_FILEPATH,
+        inputFilepath: 'inputFilepath',
+        runtimeContainer: RUNTIME_CONTAINER,
+        dependencyScopeInclude: '',
+        dependencyScopeExclude: '',
+        dependenciesEnabled: true,
+        scanFiles: true,
+        skipSnippets: false,
+        settingsFilePath: 'scanoss.json',
+        scanossSettings: false,
+        debug: true
+    });
+
+    const args = await (scanService as any).buildArgs();
+    assert.equal(true,args.includes('--debug'));
+  })
 });

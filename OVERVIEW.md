@@ -4,6 +4,42 @@ The SCANOSS Code Scan task enhances your software development process by automat
 ## Usage
 Before using the SCANOSS Code Scan Task, you need to install it from the Azure Marketplace. You can find it [here](https://marketplace.visualstudio.com/items?itemName=SCANOSS.scanoss-code-scan).
 
+## Breaking change v1.0.0
+
+- Default runtime container updated to `ghcr.io/scanoss/scanoss-py:v1.26.1`
+- Removed parameters:
+    - `sbomEnabled`
+    - `sbomFilepath`
+    - `sbomType`
+
+### Converting from sbom.json to scanoss.json
+The SBOM configuration format has changed and the file name must be updated from **sbom.json** to **scanoss.json**. Here's how to convert your existing configuration:
+
+Old format (sbom.json):
+```json
+{
+  "components": [
+    {
+      "purl": "pkg:github/scanoss/scanner.c"
+    }
+  ]
+}
+```
+
+New format (scanoss.json):
+```json
+{
+  "bom": {
+    "include": [
+      {
+        "purl": "pkg:github/scanoss/scanner.c"
+      }
+    ]
+  }
+}
+```
+
+
 ### Set Up
 
 The SCANOSS Code Scan Task uses the Azure API to create Checks and Comments on Pull Requests. Once the pipeline is available upstream, ensure you have the correct permissions set up on your repository: 
@@ -106,29 +142,26 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 
 ### Action Input Parameters
 
-| **Parameter**            | **Description**                                                                                                                                          | **Required** | **Default**                          | 
-|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|--------------------------------------|
-| outputFilepath           | Scan output file name.                                                                                                                                   | Optional     | `results.json`                       |
-| sbomEnabled              | Enable or disable scanning based on the SBOM file                                                                                                        | Optional     | `true`                               |
-| sbomFilepath             | Filepath of the SBOM file to be used for scanning                                                                                                        | Optional     | `sbom.json`                          |
-| sbomType                 | Type of SBOM operation: either 'identify' or 'ignore                                                                                                     | Optional     | `identify`                           |
-| dependenciesEnabled      | Option to enable or disable scanning of dependencies.                                                                                                    | Optional     | `false`                              |
-| dependenciesScope        | Gets development or production dependencies (scopes: dev - prod )                                                                                        | Optional     | -                                    |                       
-| dependenciesScopeInclude | Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.                                                               | Optional     | -                                    |
-| dependenciesScopeExclude | Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.                                                               | Optional     | -                                    |
-| policies                 | List of policies separated by commas, options available are: copyleft, undeclared.                                                                       | Optional     | -                                    |
-| policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                                                                                      | Optional     | `true`                               |
-| apiUrl                   | SCANOSS API URL                                                                                                                                          | Optional     | `https://api.osskb.org/scan/direct`  |
-| apiKey                   | SCANOSS API Key                                                                                                                                          | Optional     | -                                    |
-| runtimeContainer         | Runtime URL                                                                                                                                              | Optional     | `ghcr.io/scanoss/scanoss-py:v1.20.4` |
-| licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list.                                                     | Optional     | -                                    |
-| licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.                                                       | Optional     | -                                    |
-| licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.                                                              | Optional     | -                                    |
-| skipSnippets             | Skip the generation of snippets. (scan_files option must be enabled)                                                                                     | Optional     | `false`                              |
-| scanFiles                | Enable or disable file and snippet scanning                                                                                                              | Optional     | `true`                               |
-| scanossSettings          | Settings file to use for scanning. See the SCANOSS settings [documentation](https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file) | Optional     | `true`                               |
-| settingsFilepath         | Filepath of the SCANOSS settings to be used for scanning                                                                                                 | Optional     | `scanoss.json`                       |
-
+| **Parameter**            | **Description**                                                                                                                                          | **Required**   | **Default**                          | 
+|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------|--------------------------------------|
+| outputFilepath           | Scan output file name.                                                                                                                                   | Optional       | `results.json`                       |
+| dependenciesEnabled      | Option to enable or disable scanning of dependencies.                                                                                                    | Optional       | `false`                              |
+| dependenciesScope        | Gets development or production dependencies (scopes: dev - prod )                                                                                        | Optional       | -                                    |                       
+| dependenciesScopeInclude | Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.                                                               | Optional       | -                                    |
+| dependenciesScopeExclude | Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.                                                               | Optional       | -                                    |
+| policies                 | List of policies separated by commas, options available are: copyleft, undeclared.                                                                       | Optional       | -                                    |
+| policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                                                                                      | Optional       | `true`                               |
+| apiUrl                   | SCANOSS API URL                                                                                                                                          | Optional       | `https://api.osskb.org/scan/direct`  |
+| apiKey                   | SCANOSS API Key                                                                                                                                          | Optional       | -                                    |
+| runtimeContainer         | Runtime URL                                                                                                                                              | Optional       | `ghcr.io/scanoss/scanoss-py:v1.26.1` |
+| licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list.                                                     | Optional       | -                                    |
+| licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.                                                       | Optional       | -                                    |
+| licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.                                                              | Optional       | -                                    |
+| skipSnippets             | Skip the generation of snippets. (scan_files option must be enabled)                                                                                     | Optional       | `false`                              |
+| scanFiles                | Enable or disable file and snippet scanning                                                                                                              | Optional       | `true`                               |
+| scanossSettings          | Settings file to use for scanning. See the SCANOSS settings [documentation](https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file) | Optional       | `true`                               |
+| settingsFilepath         | Filepath of the SCANOSS settings to be used for scanning                                                                                                 | Optional       | `scanoss.json`                       |
+| debug                    | Enable debugging                                                                                                                                         | Optional       | `false`                              |
 
 ## Policy Checks
 The SCANOSS Code Scan Task includes two configurable policies:

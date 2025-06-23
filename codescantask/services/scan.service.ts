@@ -25,31 +25,15 @@ import * as tl from 'azure-pipelines-task-lib/task';
 import * as fs from 'fs';
 import {
     API_KEY,
-    API_URL,
+    API_URL, DEBUG,
     DEPENDENCIES_ENABLED, DEPENDENCIES_SCOPE, DEPENDENCY_SCOPE_EXCLUDE, DEPENDENCY_SCOPE_INCLUDE, EXECUTABLE,
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
-    SBOM_ENABLED,
-    SBOM_FILEPATH, SBOM_TYPE, SCAN_FILES, SCANOSS_SETTINGS, SETTINGS_FILE_PATH, SKIP_SNIPPETS
+    SCAN_FILES, SCANOSS_SETTINGS, SETTINGS_FILE_PATH, SKIP_SNIPPETS
 } from '../app.input';
 import { ScannerResults } from './result.interface';
 import path from 'path';
 export interface Options {
-    /**
-     * Whether SBOM ingestion is enabled. Optional.
-     */
-    sbomEnabled?: boolean;
-
-    /**
-     * Specifies the SBOM processing type: "identify" or "ignore". Optional.
-     */
-    sbomType?: string;
-
-    /**
-     * Absolute path to the SBOM file. Required if sbomEnabled is set to true.
-     */
-    sbomFilepath?: string;
-
     /**
      * Enables scanning for dependencies, utilizing scancode internally. Optional.
      */
@@ -87,7 +71,7 @@ export interface Options {
     inputFilepath: string;
 
     /**
-     * Runtime container to perform scan. Default [ghcr.io/scanoss/scanoss-py:v1.9.0]
+     * Runtime container to perform scan. Default [ghcr.io/scanoss/scanoss-py:v1.26.1]
      */
     runtimeContainer: string;
 
@@ -111,6 +95,11 @@ export interface Options {
      */
     settingsFilePath: string;
 
+    /**
+     * Debug mode. Default [false]
+     */
+    debug: boolean;
+
 }
 
 /**
@@ -125,9 +114,6 @@ export interface Options {
  * @property {Options} options - Configuration options for the scanner
  * @property {string} options.apiKey - API key for SCANOSS service authentication
  * @property {string} options.apiUrl - URL endpoint for the SCANOSS service
- * @property {boolean} options.sbomEnabled - Flag to enable SBOM generation
- * @property {string} options.sbomFilepath - Path to store or read SBOM files
- * @property {string} options.sbomType - Type of SBOM format to use
  * @property {boolean} options.dependenciesEnabled - Flag to enable dependency scanning
  * @property {string} options.outputFilepath - Path for scan results output
  * @property {string} options.inputFilepath - Path to the repository to scan
@@ -137,6 +123,7 @@ export interface Options {
  * @property {string} options.dependencyScopeInclude - Dependencies to include in scan
  * @property {boolean} options.skipSnippets - Flag to skip snippet scanning
  * @property {boolean} options.scanFiles - Flag to enable file scanning
+ * @property {boolean} options.debug - Flag to enable debugging
  *
  * @throws {Error} When required configuration options are missing or invalid
  *
@@ -150,9 +137,6 @@ export class ScanService {
         this.options = options || {
             apiKey: API_KEY,
             apiUrl: API_URL,
-            sbomEnabled: SBOM_ENABLED,
-            sbomFilepath: SBOM_FILEPATH,
-            sbomType: SBOM_TYPE,
             dependenciesEnabled: DEPENDENCIES_ENABLED,
             outputFilepath: path.join(tl.getVariable('Build.Repository.LocalPath') || '' , OUTPUT_FILEPATH),
             inputFilepath: REPO_DIR,
@@ -163,7 +147,8 @@ export class ScanService {
             skipSnippets: SKIP_SNIPPETS,
             scanFiles: SCAN_FILES,
             scanossSettings: SCANOSS_SETTINGS,
-            settingsFilePath: SETTINGS_FILE_PATH
+            settingsFilePath: SETTINGS_FILE_PATH,
+            debug: DEBUG
         };
     }
 
@@ -323,7 +308,7 @@ export class ScanService {
             ...this.buildSnippetArgs(),
             ...(this.options.apiUrl ? ['--apiurl', this.options.apiUrl]: []),
             ...(this.options.apiKey ? ['--key', this.options.apiKey.replace(/\n/gm, ' ')]: []),
-
+            ...(this.options.debug ? ['--debug']: [])
         ];
     }
 
@@ -371,17 +356,7 @@ export class ScanService {
                 return [];
             }
         }
-
-
-        if (!this.options.sbomEnabled || !this.options.sbomFilepath) return [];
-
-        try {
-            await fs.promises.access(this.options.sbomFilepath, fs.constants.F_OK);
-            return [`--${this.options.sbomType?.toLowerCase()}`, this.options.sbomFilepath];
-        } catch (error: any) {
-            tl.setResult(tl.TaskResult.Failed, error.message);
-            return [];
-        }
+        return [];
     }
 
     private async parseResult(): Promise<ScannerResults> {

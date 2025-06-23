@@ -8,9 +8,9 @@
   "category": "Utility",
   "author": "SCANOSS",
   "version": {
-    "Major": 0,
-    "Minor": 1,
-    "Patch": 5
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
   },
   "inputs": [
     {
@@ -62,30 +62,6 @@
       "helpMarkDown": "Specify the API URL."
     },
     {
-      "name": "sbomEnabled",
-      "type": "boolean",
-      "label": "SBOM Enabled",
-      "defaultValue": "false",
-      "required": false,
-      "helpMarkDown": "Specify whether SBOM is enabled."
-    },
-    {
-      "name": "sbomFilepath",
-      "type": "string",
-      "label": "SBOM Filepath",
-      "defaultValue": "sbom.json",
-      "required": false,
-      "helpMarkDown": "Specify the SBOM filepath."
-    },
-    {
-      "name": "sbomType",
-      "type": "string",
-      "label": "SBOM Type",
-      "defaultValue": "identify",
-      "required": false,
-      "helpMarkDown": "Specify the SBOM type."
-    },
-    {
       "name": "policies",
       "type": "string",
       "label": "policies",
@@ -105,7 +81,7 @@
       "name": "runtimeContainer",
       "type": "string",
       "label": "Runtime container",
-      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.20.4",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.26.1",
       "required": false,
       "helpMarkDown": "Specify runtime container to perform the scan."
     },
@@ -172,6 +148,14 @@
       "defaultValue": "scanoss.json",
       "required": false,
       "helpMarkDown": "SCANOSS settings file path."
+    },
+    {
+      "name": "debug",
+      "type": "boolean",
+      "label": "Enable runtime container debugging",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Enable runtime container debugging"
     }
   ],
   "execution": {
