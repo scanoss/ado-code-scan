@@ -81,7 +81,7 @@
       "name": "runtimeContainer",
       "type": "string",
       "label": "Runtime container",
-      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.26.2",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.26.3",
       "required": false,
       "helpMarkDown": "Specify runtime container to perform the scan."
     },
