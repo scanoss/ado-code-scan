@@ -156,6 +156,54 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Enable runtime container debugging"
+    },
+    {
+      "name": "dependencytrackEnabled",
+      "type": "boolean",
+      "label": "Enable automatic upload of scan results to Dependency Track",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Enable automatic upload of scan results to Dependency Track"
+    },
+    {
+      "name": "dependencytrackUrl",
+      "type": "string",
+      "label": "URL of the Dependency Track instance. Required when Dependency Track is enabled",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "URL of the Dependency Track instance. Required when Dependency Track is enabled"
+    },
+    {
+      "name": "dependencytrackKey",
+      "type": "string",
+      "label": "Dependency Track API key. Required when Dependency Track is enabled",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Dependency Track API key. Required when Dependency Track is enabled"
+    },
+    {
+      "name": "dependencytrackProjectId",
+      "type": "string",
+      "label": "UUID of an existing project in Dependency Track. Required when project name and version are not provided",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "UUID of an existing project in Dependency Track. Required when project name and version are not provided"
+    },
+    {
+      "name": "dependencytrackProjectName",
+      "type": "string",
+      "label": "Dependency track project name identifier.(will be created if it doesn't exist). Required when project ID is not provided",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Dependency track project name identifier.(will be created if it doesn't exist). Required when project ID is not provided"
+    },
+    {
+      "name": "dependencytrackProjectVersion",
+      "type": "string",
+      "label": "Dependency Track project Version identifier. Required when project ID is not provided",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Dependency Track project Version identifier. Required when project ID is not provided"
     }
   ],
   "execution": {
