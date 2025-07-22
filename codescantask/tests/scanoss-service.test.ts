@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
-   Copyright (c) 2024, SCANOSS
+   Copyright (c) 2025, SCANOSS
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -21,37 +21,29 @@
    THE SOFTWARE.
  */
 
-import tl = require('azure-pipelines-task-lib/task');
-import { ScanService } from './services/scan.service';
-import { policyManager } from './policies/policy.manager';
-import {dependencyTrackService} from "./services/dependency-track.service";
-import {scanossService} from "./services/scanoss.service";
-async function run() {
-    try {
-            tl.debug("Starting scan");
-            const scanService = new ScanService();
-            await scanService.scan();
 
-            // Convert SCANOSS scan results to CycloneDX and upload to artifacts
-            await scanossService.scanResultsToCycloneDX();
+import {RUNTIME_CONTAINER} from "../app.input";
+import {CYCLONEDX_FILE_NAME} from "../app.output";
+import {ScanOssService} from "../services/scanoss.service";
+import assert from 'assert';
 
-            // Dependency Track
-            await dependencyTrackService.uploadToDependencyTrack();
-
-            const policies = policyManager.getPolicies();
-
-        // run policies
-        for (const policy of policies) {
-            await policy.run();
-        }
-
-    }
-    catch (err:any) {
-        tl.setResult(tl.TaskResult.Failed, err.message);
-    }
-}
-
-
-
-
-run();
+describe('Scanoss service tests', () => {
+    it('should correctly return the scanoss-py CycloneDX conversion command', () => {
+        const scanossService = new ScanOssService();
+        const command = (scanossService as any).buildCycloneDXParameters();
+        assert.deepStrictEqual(command,
+            [
+            'run',
+            '-v',
+            ':/scanoss',
+            RUNTIME_CONTAINER,
+            'convert',
+            '--input',
+            './results.json',
+            '--format',
+            'cyclonedx',
+            '--output',
+            `./${CYCLONEDX_FILE_NAME}`
+        ]);
+    });
+});
