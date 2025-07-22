@@ -8,9 +8,9 @@
   "category": "Utility",
   "author": "SCANOSS",
   "version": {
-    "Major": 0,
-    "Minor": 21,
-    "Patch": 30
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 0
   },
   "inputs": [
     {
@@ -174,7 +174,7 @@
       "helpMarkDown": "URL of the Dependency Track instance. Required when Dependency Track is enabled"
     },
     {
-      "name": "dependencytrackKey",
+      "name": "dependencytrackAPIKey",
       "type": "string",
       "label": "Dependency Track API key. Required when Dependency Track is enabled",
       "defaultValue": "",

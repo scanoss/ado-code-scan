@@ -1,6 +1,6 @@
 {
   "name": "azure-devops-integration",
-  "version": "0.21.30",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
