@@ -41,6 +41,7 @@ describe('CopyleftPolicyCheck', () => {
     const defaultCopyleftLicenseExplicit = COPYLEFT_LICENSE_EXPLICIT;
     const defaultCopyleftLicenseExclude = COPYLEFT_LICENSE_EXCLUDE;
     const defaultCopyleftLicenseInclude = COPYLEFT_LICENSE_INCLUDE;
+    const defaultRepoDir = REPO_DIR;
 
     let getInputStub: sinon.SinonStub;
 
@@ -69,6 +70,7 @@ describe('CopyleftPolicyCheck', () => {
         (COPYLEFT_LICENSE_EXPLICIT as any) = defaultCopyleftLicenseExplicit;
         (COPYLEFT_LICENSE_EXCLUDE as any) = defaultCopyleftLicenseExclude;
         (COPYLEFT_LICENSE_INCLUDE as any) = defaultCopyleftLicenseInclude;
+        (REPO_DIR as any) = defaultRepoDir;
     });
 
     it('Copyleft explicit test', async function() {

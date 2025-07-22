@@ -33,6 +33,10 @@ const sanitize = (input: string):string => {
 }
 
 describe('Undeclared Policy Check Suite', () => {
+    const defaultRepoDir = REPO_DIR;
+    const defaultOutputFilepath = OUTPUT_FILEPATH;
+    const defaultScanossSettings = SCANOSS_SETTINGS;
+    
     let getInputStub: sinon.SinonStub;
 
     beforeEach(function() {
@@ -44,6 +48,9 @@ describe('Undeclared Policy Check Suite', () => {
     afterEach(function() {
         // Restore the original function
         getInputStub.restore();
+        (REPO_DIR as any) = defaultRepoDir;
+        (OUTPUT_FILEPATH as any) = defaultOutputFilepath;
+        (SCANOSS_SETTINGS as any) = defaultScanossSettings;
     });
 
     it('Build Command test', function() {
@@ -97,6 +104,7 @@ describe('Undeclared Policy Check Suite', () => {
         // Set the required environment variables
         (REPO_DIR as any) = TEST_REPO_DIR;
         (OUTPUT_FILEPATH as any) = TEST_RESULTS_FILE;
+        (SCANOSS_SETTINGS as any) = true;
 
         const undeclaredPolicyCheck = new TesteableUndeclaredPolicyCheck();
 
@@ -143,6 +151,7 @@ describe('Undeclared Policy Check Suite', () => {
         (REPO_DIR as any) = 'repodir';
         (OUTPUT_FILEPATH as any) = 'results.json';
         (DEBUG as any) = true;
+        (SCANOSS_SETTINGS as any) = true;
         const undeclaredPolicyCheck = new TesteableUndeclaredPolicyCheck();
         const cmd = undeclaredPolicyCheck.buildArgsTestable();
         assert.deepStrictEqual(cmd, [

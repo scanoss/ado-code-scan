@@ -64,7 +64,7 @@ export class DependencyTrackService {
 
         // Check required parameters
         if (!this.options.url) missingParams.push('dependencytrackUrl');
-        if (!this.options.apiKey) missingParams.push('dependencytrackKey');
+        if (!this.options.apiKey) missingParams.push('dependencytrackAPIKey');
 
         if (missingParams.length > 0) {
             throw new Error(`Dependency Track is enabled but required parameters are missing: ${missingParams.join(', ')}`);

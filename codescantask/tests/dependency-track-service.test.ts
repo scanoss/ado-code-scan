@@ -52,11 +52,11 @@ describe('Dependency track service', () => {
 
         assert.throws(() => {
             (service as any).validateConfiguration();
-            }, Error,
-            'Dependency Track is enabled but required parameters are missing: dependencytrack.apikey'
-        );
+        }, {
+            name: 'Error',
+            message: 'Dependency Track is enabled but required parameters are missing: dependencytrackAPIKey'
+        });
     });
-
 
     it('should fail due to missing project version', () => {
         // Project id has more priority than project version
@@ -74,10 +74,11 @@ describe('Dependency track service', () => {
 
         assert.throws(() => {
             (service as any).validateConfiguration();
-        }, Error,
-            `Dependency Track is enabled but project identification is incomplete. ` +
-            `Either provide 'dependencytrack.projectId' OR both 'dependencytrack.projectName' and 'dependencytrack.projectVersion'. ` +
-            `Missing: dependencytrack.projectVersion`
+        },
+        {
+            name: 'Error',
+            message: 'Dependency Track is enabled but project identification is incomplete. Either provide \'dependencytrack.projectId\' OR both \'dependencytrackProjectName\' and \'dependencytrackProjectVersion\'. Missing: dependencytrackProjectVersion'
+        }
         );
     });
 
@@ -97,10 +98,11 @@ describe('Dependency track service', () => {
 
         assert.throws(() => {
             (service as any).validateConfiguration();
-        }, Error,
-            `Dependency Track is enabled but project identification is incomplete. ` +
-            `Either provide 'dependencytrack.projectId' OR both 'dependencytrack.projectName' and 'dependencytrack.projectVersion'. ` +
-            `Missing: dependencytrack.projectName`
+        },
+        {
+            name: 'Error',
+            message: 'Dependency Track is enabled but project identification is incomplete. Either provide \'dependencytrack.projectId\' OR both \'dependencytrackProjectName\' and \'dependencytrackProjectVersion\'. Missing: dependencytrackProjectName'
+        }
         );
     });
 
@@ -117,8 +119,11 @@ describe('Dependency track service', () => {
 
         assert.throws(() => {
                 (service as any).validateConfiguration();
-            }, Error,
-            'Dependency Track is enabled but required parameters are missing: dependencytrack.url'
+            },
+            {
+                name: 'Error',
+                message: 'Dependency Track is enabled but required parameters are missing: dependencytrackUrl'
+            }
         )
     });
 
