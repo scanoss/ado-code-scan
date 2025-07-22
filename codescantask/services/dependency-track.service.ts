@@ -26,11 +26,12 @@ import {
     DEPENDENCY_TRACK_API_KEY,
     DEPENDENCY_TRACK_ENABLED,
     DEPENDENCY_TRACK_PROJECT_ID, DEPENDENCY_TRACK_PROJECT_NAME, DEPENDENCY_TRACK_PROJECT_VERSION,
-    DEPENDENCY_TRACK_URL, EXECUTABLE, REPO_DIR, RUNTIME_CONTAINER
+    DEPENDENCY_TRACK_URL, EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER
 } from "../app.input";
 import * as tl from "azure-pipelines-task-lib";
 import fs from "fs";
 import {CYCLONEDX_FILE_NAME} from "../app.output";
+import path from "path";
 
 export interface DependencyTrackOptions {
     enabled: boolean;
@@ -62,8 +63,8 @@ export class DependencyTrackService {
         const missingParams: string[] = [];
 
         // Check required parameters
-        if (!this.options.url) missingParams.push('dependencytrack.url');
-        if (!this.options.apiKey) missingParams.push('dependencytrack.apikey');
+        if (!this.options.url) missingParams.push('dependencytrackUrl');
+        if (!this.options.apiKey) missingParams.push('dependencytrackKey');
 
         if (missingParams.length > 0) {
             throw new Error(`Dependency Track is enabled but required parameters are missing: ${missingParams.join(', ')}`);
@@ -73,13 +74,13 @@ export class DependencyTrackService {
         if (!this.options.projectId) {
             const missingProjectParams: string[] = [];
 
-            if (!this.options.projectName) missingProjectParams.push('dependencytrack.projectName');
-            if (!this.options.projectVersion) missingProjectParams.push('dependencytrack.projectVersion');
+            if (!this.options.projectName) missingProjectParams.push('dependencytrackProjectName');
+            if (!this.options.projectVersion) missingProjectParams.push('dependencytrackProjectVersion');
 
             if (missingProjectParams.length > 0) {
                 throw new Error(
                     `Dependency Track is enabled but project identification is incomplete. ` +
-                    `Either provide 'dependencytrack.projectId' OR both 'dependencytrack.projectName' and 'dependencytrack.projectVersion'. ` +
+                    `Either provide 'dependencytrack.projectId' OR both 'dependencytrackProjectName' and 'dependencytrackProjectVersion'. ` +
                     `Missing: ${missingProjectParams.join(', ')}`
                 );
             }
@@ -98,7 +99,7 @@ export class DependencyTrackService {
             this.validateConfiguration();
 
             // Check if CycloneDX file exists
-            await fs.promises.readFile(CYCLONEDX_FILE_NAME, 'utf8');
+            await fs.promises.readFile(path.join(tl.getVariable('Build.Repository.LocalPath') || '' , CYCLONEDX_FILE_NAME), 'utf8');
 
             tl.debug('Starting Dependency Track upload process...');
             await this.uploadCycloneDXToDependencyTrack();

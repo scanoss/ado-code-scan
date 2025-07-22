@@ -8,9 +8,9 @@
   "category": "Utility",
   "author": "SCANOSS",
   "version": {
-    "Major": 1,
-    "Minor": 0,
-    "Patch": 2
+    "Major": 0,
+    "Minor": 21,
+    "Patch": 30
   },
   "inputs": [
     {

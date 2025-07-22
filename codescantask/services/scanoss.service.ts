@@ -25,6 +25,7 @@ import * as tl from "azure-pipelines-task-lib";
 import {EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER} from "../app.input";
 import {CYCLONEDX_FILE_NAME} from "../app.output";
 import {adoService} from "./ado.service";
+import path from "path";
 
 export class ScanOssService {
     /**
@@ -60,7 +61,7 @@ export class ScanOssService {
             if (exitCode !== 0) {
                 return new Error(`Error converting scan results into CycloneDX format`);
             }
-            await adoService.uploadArtifact(CYCLONEDX_FILE_NAME);
+           await adoService.uploadArtifact(path.join(tl.getVariable('Build.Repository.LocalPath') || '' , CYCLONEDX_FILE_NAME));
             tl.debug('Successfully converted results into CycloneDX format');
         } catch (e: any) {
             tl.error(e.message);

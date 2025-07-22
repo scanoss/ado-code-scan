@@ -43,7 +43,7 @@ export const EXECUTABLE = 'docker';
 export const DEBUG = tl.getInput('debug') === 'true';
 export const DEPENDENCY_TRACK_ENABLED = tl.getInput('dependencytrackEnabled') === 'true';
 export const DEPENDENCY_TRACK_URL = tl.getInput('dependencytrackUrl') || undefined;
-export const DEPENDENCY_TRACK_API_KEY = tl.getInput('dependencytrackApiKey') || undefined;
+export const DEPENDENCY_TRACK_API_KEY = tl.getInput('dependencytrackAPIKey') || undefined;
 export const DEPENDENCY_TRACK_PROJECT_ID = tl.getInput('dependencytrackProjectId') || undefined;
 export const DEPENDENCY_TRACK_PROJECT_NAME = tl.getInput('dependencytrackProjectName') || undefined;
 export const DEPENDENCY_TRACK_PROJECT_VERSION = tl.getInput('dependencytrackProjectVersion') || undefined;
