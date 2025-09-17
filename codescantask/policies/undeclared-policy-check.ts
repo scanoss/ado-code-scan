@@ -56,13 +56,20 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
 
         const args = this.buildArgs();
 
-        console.log(`Executing Docker command: ${args}`);
+        tl.debug(`Executing Docker command: ${args}`);
         const results = tl.execSync(EXECUTABLE, args);
 
-        if (results.code === 1) {
+        if (results.code === 0) {
             await this.success('### :white_check_mark: Policy Pass \n #### Not undeclared components were found', undefined);
             return;
         }
+
+        // Another exit error is not related to undeclared components
+        if(results.code === 1) {
+            tl.setResult(tl.TaskResult.Failed, "Undeclared component policy failed: See logs for more details.");
+            return;
+        }
+
         const undeclaredComponentsResults = this.getResults(results.stdout,results.stderr);
         await this.uploadArtifact(this.policyCheckResultName, undeclaredComponentsResults);
         await this.reject(results.stderr, undeclaredComponentsResults);

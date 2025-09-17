@@ -182,17 +182,12 @@ export class ScanService {
             const resultCode = await tl.execAsync(EXECUTABLE, args, options);
 
             if (resultCode !== 0) {
-                console.error(`Error: Docker command failed with exit code ${resultCode}`);
-                tl.setResult(tl.TaskResult.Failed, 'Docker command failed');
+                throw new Error('Scan Failed. Please check the logs for more details.') ;
             }
-            console.log('Docker command executed successfully');
+            tl.debug('Scan done successfully');
             this.uploadResultsToArtifacts();
             return this.parseResult();
-
-
         } catch (error: any) {
-            console.error('Error:', error);
-            tl.setResult(tl.TaskResult.Failed, error.message);
             throw error;
         }
     }

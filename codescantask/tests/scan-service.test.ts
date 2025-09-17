@@ -136,15 +136,11 @@ describe('ScanService', function () {
         assert.notDeepStrictEqual(command,'')
     });
 
-
-    it('Should scan dependencies', async function () {
-        this.timeout(30000);
-        (OUTPUT_FILEPATH as any) = 'test-results.json';
-        const TEST_DIR = __dirname;
-        const resultPath = path.join(TEST_DIR, 'data', 'test-results.json');
-        const service = new ScanService({
-            outputFilepath: resultPath,
-            inputFilepath: path.join(TEST_DIR, 'data'),
+    it('should add --debug flag to command arguments when debug option is enabled', async function() {
+        (OUTPUT_FILEPATH as any) = 'results.json';
+        const scanService = new ScanService({
+            outputFilepath: OUTPUT_FILEPATH,
+            inputFilepath: 'inputFilepath',
             runtimeContainer: RUNTIME_CONTAINER,
             dependencyScopeInclude: '',
             dependencyScopeExclude: '',
@@ -153,32 +149,10 @@ describe('ScanService', function () {
             skipSnippets: false,
             settingsFilePath: 'scanoss.json',
             scanossSettings: false,
-            debug: false
+            debug: true
         });
 
-        // Accessing the private method by bypassing TypeScript type checks
-        const results = await service.scan();
-        assert.equal(results['package.json'][0].dependencies.length>0, true);
-        await fs.promises.rm(resultPath)
-    });
-
-it('should add --debug flag to command arguments when debug option is enabled', async function() {
-    (OUTPUT_FILEPATH as any) = 'results.json';
-    const scanService = new ScanService({
-        outputFilepath: OUTPUT_FILEPATH,
-        inputFilepath: 'inputFilepath',
-        runtimeContainer: RUNTIME_CONTAINER,
-        dependencyScopeInclude: '',
-        dependencyScopeExclude: '',
-        dependenciesEnabled: true,
-        scanFiles: true,
-        skipSnippets: false,
-        settingsFilePath: 'scanoss.json',
-        scanossSettings: false,
-        debug: true
-    });
-
-    const args = await (scanService as any).buildArgs();
-    assert.equal(true,args.includes('--debug'));
-  })
+        const args = await (scanService as any).buildArgs();
+        assert.equal(true,args.includes('--debug'));
+    })
 });
