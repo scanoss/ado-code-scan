@@ -145,7 +145,7 @@ describe('CopyleftPolicyCheck', () => {
         assert(details !== undefined, 'Details should not be undefined');
         assert(summary !== undefined, 'Summary should not be undefined');
 
-        assert.equal(sanitize(details),sanitize(`### Copyleft licenses
+        assert.equal(sanitize(details),sanitize(`### Copyleft Licenses
          | Component | License | URL | Copyleft | 
          |-|:-:|-|-| 
          | pkg:github/scanoss/wfp | GPL-2.0-only | https://spdx.org/licenses/GPL-2.0-only.html | YES | 
@@ -204,7 +204,7 @@ describe('CopyleftPolicyCheck', () => {
         assert(summary !== undefined, 'Summary should not be undefined');
         assert(details !== undefined, 'Details should not be undefined');
 
-        assert.equal(sanitize(details),sanitize(`### Copyleft licenses
+        assert.equal(sanitize(details),sanitize(`### Copyleft Licenses
           | Component | License | URL | Copyleft | 
           |-|:-:|-|-| 
           | pkg:npm/%40grpc/grpc-js | Apache-2.0 | https://spdx.org/licenses/Apache-2.0.html | YES | 

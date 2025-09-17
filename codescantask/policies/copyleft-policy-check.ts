@@ -76,11 +76,17 @@ export class CopyleftPolicyCheck extends PolicyCheck {
 
         const args = this.buildArgs();
 
-        console.log(`Executing Docker command: ${args}`);
+        tl.debug(`Executing Docker command: ${args}`);
         const results = tl.execSync(EXECUTABLE, args);
 
-        if (results.code === 1) {
+        if (results.code === 0) {
             await this.success('### :white_check_mark: Policy Pass \n #### Not copyleft Licenses were found', undefined);
+            return;
+        }
+
+        // Another exit error is not related to copyleft licenses
+        if(results.code === 1) {
+            tl.setResult(tl.TaskResult.Failed, "Copyleft policy failed: See logs for more details.");
             return;
         }
 
