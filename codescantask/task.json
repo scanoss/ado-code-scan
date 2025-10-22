@@ -81,7 +81,7 @@
       "name": "runtimeContainer",
       "type": "string",
       "label": "Runtime container",
-      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.32.0",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.37.1",
       "required": false,
       "helpMarkDown": "Specify runtime container to perform the scan."
     },
@@ -89,7 +89,7 @@
       "name": "outputFilepath",
       "type": "string",
       "label": "Output File Path",
-      "defaultValue": "results.json",
+      "defaultValue": "scanoss-raw.json",
       "required": false,
       "helpMarkDown": "Scan output file name."
     },
