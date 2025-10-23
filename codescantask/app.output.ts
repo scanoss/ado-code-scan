@@ -25,4 +25,4 @@ export const CYCLONEDX_FILE_NAME = 'scanoss-cyclonedx.json';
 
 export const SPDXLITE_FILE_NAME = 'scanoss-spdxlite.json';
 
-export const CSV_FILE_NAME = 'scanoss-sbom.json'
+export const CSV_FILE_NAME = 'scanoss-sbom.csv'

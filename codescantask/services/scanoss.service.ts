@@ -24,6 +24,8 @@
 import * as tl from 'azure-pipelines-task-lib';
 import {EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER} from "../app.input";
 import {CYCLONEDX_FILE_NAME, SPDXLITE_FILE_NAME, CSV_FILE_NAME} from "../app.output";
+import fs from 'fs';
+import path from "path";
 
 export class ScanOssService {
     /**
@@ -77,9 +79,9 @@ export class ScanOssService {
             }
             // Check if reformatted file was actually created before trying to upload it
             try {
-                const fs = await import('fs');
-                await fs.promises.access(filename, fs.constants.F_OK);
-                this.uploadToArtifacts(filename);
+                const formatAbsolutePath = path.join(process.cwd(), filename)
+                await fs.promises.access(formatAbsolutePath, fs.constants.F_OK);
+                this.uploadToArtifacts(formatAbsolutePath);
                 console.log(`Successfully converted results into ${format} format`);
             } catch (fileError) {
                 // File doesn't exist - this can happen with empty repos
@@ -90,8 +92,9 @@ export class ScanOssService {
         }
     }
 
-    private uploadToArtifacts(artifactName: string) {
-        tl.command('artifact.upload', { artifactname: artifactName }, artifactName);
+    private uploadToArtifacts(pathToFile: string) {
+        const artifactName = 'scanoss';
+        tl.command('artifact.upload', { artifactname: artifactName }, pathToFile);
     }
 }
 
