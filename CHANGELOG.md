@@ -14,3 +14,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added raw results conversion to CycloneDX, SPDXLite and CSV
 ### Changed
 - Upgraded scanoss-py version to v1.37.1
+
+[1.1.0]: https://github.com/scanoss/ado-code-scan/compare/v1.0.3...v1.1.0
