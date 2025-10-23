@@ -31,10 +31,10 @@ export const COPYLEFT_LICENSE_EXCLUDE = tl.getInput('licensesCopyleftExclude');
 export const COPYLEFT_LICENSE_EXPLICIT = tl.getInput('licensesCopyleftExplicit');
 export const API_KEY = tl.getInput('apiKey');
 export const API_URL = tl.getInput('apiUrl');
-export const OUTPUT_FILEPATH = tl.getInput('outputFilepath') || "results.json";
+export const OUTPUT_FILEPATH = tl.getInput('outputFilepath') || "scanoss-raw.json";
 export const REPO_DIR = tl.getVariable('Build.Repository.LocalPath') || ''; // Get repository path
 export const POLICIES_HALT_ON_FAILURE = tl.getInput('policiesHaltOnFailure') === 'true';
-export const RUNTIME_CONTAINER = tl.getInput('runtimeContainer') || "ghcr.io/scanoss/scanoss-py:v1.32.0";
+export const RUNTIME_CONTAINER = tl.getInput('runtimeContainer') || "ghcr.io/scanoss/scanoss-py:v1.37.1";
 export const SKIP_SNIPPETS = tl.getInput('skipSnippets') === 'true';
 export const SCAN_FILES = tl.getInput('scanFiles') === 'true';
 export const SCANOSS_SETTINGS = tl.getInput('scanossSettings') === 'true';

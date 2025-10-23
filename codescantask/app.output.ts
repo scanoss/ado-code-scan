@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 /*
-   Copyright (c) 2024, SCANOSS
+   Copyright (c) 2025, SCANOSS
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -21,35 +21,8 @@
    THE SOFTWARE.
  */
 
-import tl = require('azure-pipelines-task-lib/task');
-import { ScanService } from './services/scan.service';
-import { scanossService } from "./services/scanoss.service";
-import { policyManager } from './policies/policy.manager';
-async function run() {
-    try {
-            console.log("Starting scan");
-            const scanService = new ScanService();
-            await scanService.scan();
-            const policies = policyManager.getPolicies();
+export const CYCLONEDX_FILE_NAME = 'scanoss-cyclonedx.json';
 
-        // Convert raw result to CycloneDX, SPDXLite and CSV
-        const formats = ['cyclonedx', 'spdxlite', 'csv'];
-        for (const format of formats) {
-            await scanossService.reformatScanResults(format);
-        }
+export const SPDXLITE_FILE_NAME = 'scanoss-spdxlite.json';
 
-        // run policies
-        for (const policy of policies) {
-            await policy.run();
-        }
-
-    }
-    catch (err:any) {
-        tl.setResult(tl.TaskResult.Failed, err.message);
-    }
-}
-
-
-
-
-run();
+export const CSV_FILE_NAME = 'scanoss-sbom.csv'
