@@ -47,9 +47,9 @@ export class ScanOssService {
     }
 
     /**
-     * Converts SCANOSS results to CycloneDX format using scanoss-py.
-     * Currently always generates CycloneDX file which can be used by Dependency Track
-     * or uploaded as an artifact for other integrations.
+     * Reformats SCANOSS results using scanoss-py.
+     * Currently always generates CycloneDX, SPDXLite and CSV files to be
+     * uploaded as an artifact for other integrations.
      */
     async reformatScanResults(format: string): Promise<Error | undefined> {
         try {
