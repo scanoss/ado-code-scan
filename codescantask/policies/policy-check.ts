@@ -79,13 +79,14 @@ export abstract class PolicyCheck {
         if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
             if (!this.accessToken || !this.orgUrl || !this.project || !this.repositoryId || !this.pullRequestId) {
-                throw new Error(`Missing necessary environment variables.\n      
+                tl.setResult(tl.TaskResult.SucceededWithIssues, `Missing necessary environment variables.\n
                         Access Token: ${this.accessToken}\n
                         Organization url: ${this.orgUrl}\n
                         Project: ${this.project}\n
                         Repository ID: ${this.repositoryId}\n
-                        Pull request id: ${this.repositoryId}                
+                        Pull request id: ${this.repositoryId}
                 `);
+                return;
             }
 
             const status = {
@@ -110,7 +111,7 @@ export abstract class PolicyCheck {
        }
     }
 
-    private async addCommentToPR(title: string, content: string) {
+    protected async addCommentToPR(title: string, content: string) {
         if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
             const apiUrl =`${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads?api-version=6.0`;

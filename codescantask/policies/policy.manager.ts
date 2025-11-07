@@ -25,6 +25,7 @@ import { CopyleftPolicyCheck } from './copyleft-policy-check';
 import { PolicyCheck } from './policy-check';
 import tl = require('azure-pipelines-task-lib/task');
 import { UndeclaredPolicyCheck } from './undeclared-policy-check';
+import { DepTrackPolicyCheck } from './dep-track-policy-check';
 
 type PolicyRegistry = Record<string, new () => PolicyCheck>;
 
@@ -34,7 +35,11 @@ export class PolicyManager {
     constructor(policyRegistry?: PolicyRegistry) {
         this.policyRegistry = policyRegistry || {
             copyleft: CopyleftPolicyCheck,
-            undeclared: UndeclaredPolicyCheck
+            cpl: CopyleftPolicyCheck,
+            undeclared: UndeclaredPolicyCheck,
+            und: UndeclaredPolicyCheck,
+            deptrack: DepTrackPolicyCheck,
+            dt: DepTrackPolicyCheck
         };
     }
 
