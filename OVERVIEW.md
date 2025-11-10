@@ -149,8 +149,14 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | dependenciesScope        | Gets development or production dependencies (scopes: dev - prod )                                                                                        | Optional       | -                                    |                       
 | dependenciesScopeInclude | Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.                                                               | Optional       | -                                    |
 | dependenciesScopeExclude | Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.                                                               | Optional       | -                                    |
-| policies                 | List of policies separated by commas, options available are: copyleft, undeclared.                                                                       | Optional       | -                                    |
+| policies                 | List of policies separated by commas, options available are: copyleft, undeclared, deptrack.                                                             | Optional       | -                                    |
 | policiesHaltOnFailure    | Halt check on policy failure. If set to false checks will not fail.                                                                                      | Optional       | `true`                               |
+| depTrackEnabled          | Enable or disable Dependency Track SBOM upload and status reporting.                                                                                     | Optional       | `false`                              |
+| depTrackUrl              | Dependency Track server URL (e.g., https://deptrack.example.com).                                                                                        | Optional       | -                                    |
+| depTrackApikey           | Dependency Track API key for authentication.                                                                                                             | Optional       | -                                    |
+| depTrackProjectId        | UUID of an existing Dependency Track project (alternative to name/version).                                                                              | Optional       | -                                    |
+| depTrackProjectName      | Dependency Track project name (required if projectId not provided).                                                                                      | Optional       | -                                    |
+| depTrackProjectVersion   | Dependency Track project version (required if projectId not provided).                                                                                   | Optional       | -                                    |
 | apiUrl                   | SCANOSS API URL                                                                                                                                          | Optional       | `https://api.osskb.org/scan/direct`  |
 | apiKey                   | SCANOSS API Key                                                                                                                                          | Optional       | -                                    |
 | runtimeContainer         | Runtime URL                                                                                                                                              | Optional       | `ghcr.io/scanoss/scanoss-py:v1.37.1` |
@@ -164,13 +170,31 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | debug                    | Enable debugging                                                                                                                                         | Optional       | `false`                              |
 
 ## Policy Checks
-The SCANOSS Code Scan Task includes two configurable policies:
+The SCANOSS Code Scan Task includes three configurable policies:
 
-1. Copyleft: This policy checks if any component or code snippet is associated with a copyleft license. If such a
+1. **Copyleft**: This policy checks if any component or code snippet is associated with a copyleft license. If such a
    license is detected, the pull request (PR) is rejected. The default list of Copyleft licenses is defined in the following [file](https://github.com/scanoss/ado-code-scan/blob/1218c4fe2dcda5f807b505e271096b1ec0afd8a9/codescantask/utils/license.utils.ts#L4).
 
-2. Undeclared: This policy compares the components detected in the repository against those declared in the scanoss.json
+2. **Undeclared**: This policy compares the components detected in the repository against those declared in the scanoss.json
    file. If there are undeclared components, the PR is rejected.
+
+3. **Dependency Track** (deptrack): This policy integrates with a Dependency Track server to check for policy violations including security vulnerabilities, license violations, and compliance issues as configured in your Dependency Track policies. The policy check queries an existing Dependency Track project for violations and reports them in the pipeline.
+
+   **Requirements:**
+   - Dependency Track server URL and API key
+   - Either a project UUID or project name/version
+   - The policy runs even if SBOM upload is disabled, but will show warnings if checking against potentially stale data
+
+   **Configuration Example:**
+   ```yaml
+   inputs:
+     policies: copyleft,undeclared,deptrack
+     depTrackEnabled: true
+     depTrackUrl: 'https://deptrack.example.com'
+     depTrackApikey: $(DEPTRACK_API_KEY)
+     depTrackProjectName: 'my-project'
+     depTrackProjectVersion: '1.0.0'
+   ```
 
 Additionally, if it is a Pull Request, a comment with a summary of the report will be automatically generated.
 
@@ -179,6 +203,40 @@ Additionally, if it is a Pull Request, a comment with a summary of the report wi
 
 ![Comments on PR Copyleft licenses](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/pr_comment_copyleft.png?raw=true)
 
+## Dependency Track Integration
+
+The SCANOSS Code Scan Task integrates with Dependency Track to provide enhanced vulnerability tracking and policy enforcement. This integration consists of two main features:
+
+### 1. SBOM Upload Status Check
+
+When `depTrackEnabled` is set to `true`, the task will automatically upload a CycloneDX SBOM to your Dependency Track server and report the upload status as a separate PR status check. This status check provides:
+
+- **Success/Failure status**: Visual indicator of whether the SBOM was successfully uploaded
+- **Upload details**: Information about the uploaded SBOM including:
+  - Project name and version
+  - Number of components analyzed
+  - File size and upload time
+  - Direct link to the project in Dependency Track
+- **PR comments**: Detailed success or failure messages posted as PR comments
+- **Troubleshooting guidance**: If upload fails, helpful error messages with configuration tips
+
+**Note**: The SBOM upload status check runs independently from the policy checks. You can enable SBOM upload without enabling the Dependency Track policy check.
+
+**Configuration Example:**
+```yaml
+inputs:
+  depTrackEnabled: true
+  depTrackUrl: 'https://deptrack.example.com'
+  depTrackApikey: $(DEPTRACK_API_KEY)
+  depTrackProjectName: 'my-project'
+  depTrackProjectVersion: '1.0.0'
+```
+
+### 2. Dependency Track Policy Check
+
+The Dependency Track policy check (enabled by adding `deptrack` to the `policies` parameter) queries your Dependency Track server for policy violations and fails the build if violations are found. This is separate from the upload functionality and can be used independently.
+
+See the **Policy Checks** section above for detailed information about the Dependency Track policy check.
 
 ## Artifacts
 The scan results and policy check outcomes are uploaded to the artifacts folder of the specific run of the pipeline.
