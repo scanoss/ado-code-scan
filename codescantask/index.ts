@@ -25,6 +25,11 @@ import tl = require('azure-pipelines-task-lib/task');
 import { ScanService } from './services/scan.service';
 import { scanossService } from "./services/scanoss.service";
 import { policyManager } from './policies/policy.manager';
+import { DependencyTrackService } from './services/dependency-track.service';
+import { DependencyTrackStatusService } from './services/dependency-track-status.service';
+import { DepTrackPolicyCheck } from './policies/dep-track-policy-check';
+import {DEPENDENCY_TRACK_ENABLED, setDependencyTrackProjectId, setDependencyTrackUploadToken} from "./app.input";
+
 async function run() {
     try {
             console.log("Starting scan");
@@ -38,18 +43,36 @@ async function run() {
             await scanossService.reformatScanResults(format);
         }
 
-        // run policies
+        // Dependency Track Upload
+        let uploadAttempted = false;
+        if (DEPENDENCY_TRACK_ENABLED) {
+            const dtService = new DependencyTrackService();
+            const uploadResult = await dtService.uploadToDependencyTrack();
+            const dtStatusService = new DependencyTrackStatusService();
+            await dtStatusService.reportUploadStatus(uploadResult);
+            // Set flag for policy check to know upload was attempted
+            uploadAttempted = uploadResult.enabled;
+            if (uploadResult.success && uploadResult.uploadToken && uploadResult.projectId) {
+                // Store upload token and project ID for policy check
+                setDependencyTrackUploadToken(uploadResult.uploadToken);
+                setDependencyTrackProjectId(uploadResult.projectId);
+            }
+        }
+
+        // Run policies
         for (const policy of policies) {
+            // If this is a Dependency Track policy, set the upload attempted flag
+            if (policy instanceof DepTrackPolicyCheck) {
+                policy.setUploadAttempted(uploadAttempted);
+            }
             await policy.run();
         }
 
-    }
-    catch (err:any) {
+    } catch (err:any) {
         tl.setResult(tl.TaskResult.Failed, err.message);
     }
 }
-
-
-
-
-run();
+run().catch((err) => {
+    tl.setResult(tl.TaskResult.Failed, err.message || 'Unknown error occurred');
+    process.exit(1);
+});

@@ -34,10 +34,33 @@ export const API_URL = tl.getInput('apiUrl');
 export const OUTPUT_FILEPATH = tl.getInput('outputFilepath') || "scanoss-raw.json";
 export const REPO_DIR = tl.getVariable('Build.Repository.LocalPath') || ''; // Get repository path
 export const POLICIES_HALT_ON_FAILURE = tl.getInput('policiesHaltOnFailure') === 'true';
-export const RUNTIME_CONTAINER = tl.getInput('runtimeContainer') || "ghcr.io/scanoss/scanoss-py:v1.37.1";
+export const RUNTIME_CONTAINER = tl.getInput('runtimeContainer') || "ghcr.io/scanoss/scanoss-py:v1.40.1";
 export const SKIP_SNIPPETS = tl.getInput('skipSnippets') === 'true';
 export const SCAN_FILES = tl.getInput('scanFiles') === 'true';
 export const SCANOSS_SETTINGS = tl.getInput('scanossSettings') === 'true';
 export const SETTINGS_FILE_PATH = tl.getInput('settingsFilepath') || 'scanoss.json';
 export const EXECUTABLE = 'docker';
 export const DEBUG = tl.getInput('debug') === 'true';
+
+// ============================================================================
+// Dependency Track Configuration
+// ============================================================================
+export const DEPENDENCY_TRACK_ENABLED = tl.getInput('depTrackEnabled') === 'true';
+export const DEPENDENCY_TRACK_URL = tl.getInput('depTrackUrl');
+export const DEPENDENCY_TRACK_API_KEY = tl.getInput('depTrackApikey');
+/**
+ * UUID of an existing project in Dependency Track.
+ * Used for uploading to a specific project. Optional if project name/version provided.
+ */
+export let DEPENDENCY_TRACK_PROJECT_ID = tl.getInput('depTrackProjectId');
+export const DEPENDENCY_TRACK_PROJECT_NAME = tl.getInput('depTrackProjectName');
+export const DEPENDENCY_TRACK_PROJECT_VERSION = tl.getInput('depTrackProjectVersion');
+
+export let DEPENDENCY_TRACK_UPLOAD_TOKEN: string | undefined;
+
+export const setDependencyTrackUploadToken = (token: string) => {
+    DEPENDENCY_TRACK_UPLOAD_TOKEN = token;
+};
+export const setDependencyTrackProjectId = (id: string) => {
+    DEPENDENCY_TRACK_PROJECT_ID = id;
+};
