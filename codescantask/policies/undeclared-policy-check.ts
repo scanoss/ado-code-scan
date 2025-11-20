@@ -24,6 +24,8 @@
 import { PolicyCheck } from './policy-check';
 import {DEBUG, EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SCANOSS_SETTINGS} from '../app.input';
 import * as tl from 'azure-pipelines-task-lib';
+import * as fs from 'fs';
+import * as path from 'path';
 
 /**
  * Verifies that all components identified in scanner results are declared in the project's SBOM.
@@ -41,14 +43,28 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
 
     private buildArgs(): Array<string> {
         return ['run', '-v', `${REPO_DIR}:/scanoss`, RUNTIME_CONTAINER, 'inspect', 'undeclared', '--input',
-            OUTPUT_FILEPATH, '--format', 'md',
+            OUTPUT_FILEPATH,
+            '--format',
+            'md',
+            '--output',
+            'undeclared-details.md',
+            '--status',
+            'undeclared-summary.md',
             ...(!SCANOSS_SETTINGS ? ['--sbom-format', 'legacy']: []), // Sets sbom format output to legacy if SCANOSS_SETTINGS is not true
             ...(DEBUG ? ['--debug'] : [])
         ];
     }
 
-    private getResults(details: string, summary:string) {
-        return `${details}\n${summary}`;
+    private async getDetails(detailsFile: string) {
+        const detailsPath = path.join(REPO_DIR, detailsFile);
+        tl.debug(`Reading copyleft details from ${detailsPath}`);
+        return  fs.promises.readFile(detailsPath, 'utf-8');
+    }
+
+    private async getSummary(summaryFile:string) {
+        const summaryPath = path.join(REPO_DIR, summaryFile);
+        tl.debug(`Reading copyleft summary from ${summaryPath}`);
+        return  fs.promises.readFile(summaryPath, 'utf-8');
     }
 
     async run(): Promise<void> {
@@ -70,8 +86,10 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
             return;
         }
 
-        const undeclaredComponentsResults = this.getResults(results.stdout,results.stderr);
-        await this.uploadArtifact(this.policyCheckResultName, undeclaredComponentsResults);
-        await this.reject(results.stderr, undeclaredComponentsResults);
+        const detailsResults = await this.getDetails('undeclared-details.md');
+        const summaryResults = await this.getSummary('undeclared-summary.md');
+        const combinedResults = `${detailsResults}\n${summaryResults}`;
+        await this.uploadArtifact(this.policyCheckResultName, combinedResults);
+        await this.reject(results.stderr, combinedResults);
     }
 }

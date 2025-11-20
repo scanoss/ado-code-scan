@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Updated copyleft policy check to read results from generated markdown files (`copyleft-details.md` and `copyleft-summary.md`)
+- Updated undeclared policy check to read results from generated markdown files (`undeclared-details.md` and `undeclared-summary.md`)
+- Added `instanceNameFormat` to the task.json file
+
 ### Added
-- Changes...
+- Added `.gitignore` entries for generated policy check result files
 
 ## [1.2.0] - 2025-11-7
 ### Added

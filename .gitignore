@@ -3,3 +3,6 @@ SCANOSS*.vsix
 *.js
 .idea
 /codescantask/.taskkey
+
+policy-check-copyleft-results.md
+policy-check-undeclared-results.md

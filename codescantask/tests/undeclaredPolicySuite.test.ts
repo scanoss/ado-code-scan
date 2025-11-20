@@ -62,6 +62,10 @@ describe('Undeclared Policy Check Suite', () => {
             'results.json',
             '--format',
             'md',
+            '--output',
+            'undeclared-details.md',
+            '--status',
+            'undeclared-summary.md',
             '--sbom-format',
             'legacy'
         ]);
@@ -84,6 +88,10 @@ describe('Undeclared Policy Check Suite', () => {
             'results.json',
             '--format',
             'md',
+            '--output',
+            'undeclared-details.md',
+            '--status',
+            'undeclared-summary.md',
         ]);
     });
 
@@ -105,6 +113,7 @@ describe('Undeclared Policy Check Suite', () => {
 
         const details = undeclaredPolicyCheck.details();
         const summary = undeclaredPolicyCheck.getDescription();
+        console.log("SUMMARY", summary);
 
         assert(summary !== undefined, 'Summary should not be undefined');
         assert(details !== undefined, 'Details should not be undefined');
@@ -156,6 +165,10 @@ describe('Undeclared Policy Check Suite', () => {
             'results.json',
             '--format',
             'md',
+            '--output',
+            'undeclared-details.md',
+            '--status',
+            'undeclared-summary.md',
             '--debug'
         ]);
     });
