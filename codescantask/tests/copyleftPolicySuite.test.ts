@@ -121,7 +121,11 @@ describe('CopyleftPolicyCheck', () => {
             '--input',
             'results.json',
             '--format',
-            'md'
+            'md',
+            '--output',
+            'copyleft-details.md',
+            '--status',
+            'copyleft-summary.md'
         ]);
     });
 
@@ -230,7 +234,11 @@ describe('CopyleftPolicyCheck', () => {
             '--input',
             'results.json',
             '--format',
-            'md'
+            'md',
+            '--output',
+            'copyleft-details.md',
+            '--status',
+            'copyleft-summary.md'
         ]);
     });
 });

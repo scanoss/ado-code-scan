@@ -30,6 +30,8 @@ import {
     REPO_DIR,
     RUNTIME_CONTAINER
 } from "../app.input";
+import path from "path";
+import fs from "fs";
 
 /**
  * This class checks if any of the components identified in the scanner results are subject to copyleft licenses.
@@ -66,9 +68,25 @@ export class CopyleftPolicyCheck extends PolicyCheck {
             OUTPUT_FILEPATH,
             '--format',
             'md',
+            '--output',
+            'copyleft-details.md',
+            '--status',
+            'copyleft-summary.md',
             ...this.buildCopyleftArgs(),
             ...(DEBUG ? ['--debug'] : [])
         ];
+    }
+
+    private async getDetails(detailsFile: string) {
+        const detailsPath = path.join(REPO_DIR, detailsFile);
+        tl.debug(`Reading copyleft details from ${detailsPath}`);
+        return  fs.promises.readFile(detailsPath, 'utf-8');
+    }
+
+    private async getSummary(summaryFile:string) {
+        const summaryPath = path.join(REPO_DIR, summaryFile);
+        tl.debug(`Reading copyleft summary from ${summaryPath}`);
+        return  fs.promises.readFile(summaryPath, 'utf-8');
     }
 
     async run(): Promise<void> {
@@ -89,9 +107,11 @@ export class CopyleftPolicyCheck extends PolicyCheck {
             tl.setResult(tl.TaskResult.Failed, "Copyleft policy failed: See logs for more details.");
             return;
         }
+        const copyLeftDetailsResults = await this.getDetails('copyleft-details.md');
+        const copyLeftSummaryResults = await this.getSummary('copyleft-summary.md');
 
-        await this.uploadArtifact(this.policyCheckResultName, results.stdout);
-        await this.reject(results.stderr, results.stdout);
+        await this.uploadArtifact(this.policyCheckResultName, `${copyLeftDetailsResults}\n${copyLeftSummaryResults}`);
+        await this.reject(copyLeftSummaryResults, copyLeftDetailsResults);
 
     }
 

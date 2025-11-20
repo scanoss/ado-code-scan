@@ -12,6 +12,7 @@
     "Minor": 2,
     "Patch": 0
   },
+  "instanceNameFormat": "SCANOSS Code Scan",
   "inputs": [
     {
       "name": "dependenciesEnabled",
