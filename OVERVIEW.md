@@ -105,7 +105,7 @@ steps:
   - checkout: self
     persistCredentials: true
 
-  - task: scanoss@0
+  - task: scanoss@1.3.0
     displayName: "SCANOSS Code Scan"
     inputs:
      # apiKey: $(APIKEY)
