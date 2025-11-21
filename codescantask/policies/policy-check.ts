@@ -70,7 +70,7 @@ export abstract class PolicyCheck {
         tl.setResult(status, `[${this.checkName}], SUMMARY: ${summary}, DETAILS: ${text? text: ''} `);
         await this.updatePRStatus(PR_STATUS.failed, `SCANOSS Policy Check: ${this.checkName}`);
         if (text) {
-            await this.addCommentToPR(`${this.checkName} Check Results`, text);
+            await this.addCommentToPR(`${this.checkName} Results`, text);
         }
 
     }
@@ -111,15 +111,65 @@ export abstract class PolicyCheck {
        }
     }
 
+    /**
+     * Deletes existing SCANOSS comments for this check type from the PR
+     * Identifies comments by the SCANOSS marker and check name in the content
+     */
+    private async deletePreviousComments(title: string):Promise<void> {
+        if (this.buildReason && this.buildReason !== 'PullRequest') return;
+        try {
+            const apiUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads?api-version=6.0`;
+
+            const response = await axios.get(apiUrl, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.accessToken}`
+                }
+            });
+
+            const threads = response.data.value || [];
+            const scanossMarker = `SCANOSS - ${title}`;
+            tl.debug(`Looking for threads with marker: ${scanossMarker}`);
+            for (const thread of threads) {
+                if (thread.comments && thread.comments.length > 0) {
+                    const firstComment = thread.comments[0];
+                    tl.debug(`Thread ${thread.id} - First comment content: ${firstComment.content?.substring(0, 100)}...`);
+
+                    // Check if this is a SCANOSS comment for this check type
+                    if (firstComment.content && firstComment.content.includes(scanossMarker)) {
+                        tl.debug(`Found SCANOSS comment thread ${thread.id}, deleting all comments`);
+                        // Delete all comments in this thread
+                        for (const comment of thread.comments) {
+                            const deleteUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads/${thread.id}/comments/${comment.id}?api-version=7.1`;
+                            await axios.delete(deleteUrl, {
+                                headers: {
+                                    'Authorization': `Bearer ${this.accessToken}`
+                                }
+                            });
+                            tl.debug(`Deleted comment ${comment.id} from thread ${thread.id}`);
+                        }
+                    }
+                }
+            }
+        } catch (error: any) {
+            tl.warning(`Failed to delete previous comments: ${error.message}`);
+        }
+    }
+
     protected async addCommentToPR(title: string, content: string) {
         if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
+            // Delete previous comments for this check type
+            await this.deletePreviousComments(title);
+
             const apiUrl =`${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads?api-version=6.0`;
 
+            // Add a hidden marker to identify SCANOSS comments and the check type
+            const scanossMarker = `SCANOSS - ${title}`;
             const payload = {
                 comments: [{
                     parentCommentId: 0,
-                    content: `## ${title}\n${content}`
+                    content: `##${scanossMarker}\n\n${content}`
                 }]
             };
 
