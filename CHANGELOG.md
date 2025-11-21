@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated copyleft policy check to read results from generated markdown files (`copyleft-details.md` and `copyleft-summary.md`)
 - Updated undeclared policy check to read results from generated markdown files (`undeclared-details.md` and `undeclared-summary.md`)
 - Added `instanceNameFormat` to the task.json file
+### Fixed
+- Fixed repeated comments for policy checks
 
 ### Added
 - Added `.gitignore` entries for generated policy check result files
