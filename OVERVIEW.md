@@ -105,7 +105,7 @@ steps:
   - checkout: self
     persistCredentials: true
 
-  - task: scanoss@0
+  - task: scanoss@1
     displayName: "SCANOSS Code Scan"
     inputs:
      # apiKey: $(APIKEY)
@@ -118,8 +118,10 @@ steps:
    
 ```
 
-**NOTE**:  
-Minor versions can be set by specifying the full version number of a task after the @ sign (example: scanoss@0.1.1). For further details, please refer to the [task version](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/tasks?view=azure-devops&tabs=yaml#task-versions).
+**NOTE**:
+- We recommend using `scanoss@1` (latest major version) for new pipelines.
+- For legacy pipelines, `scanoss@0` is still available for backward compatibility.
+- Specific versions can be pinned using the full version number after the @ sign (example: `scanoss@1.2.0`). For further details, please refer to the [task version](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/tasks?view=azure-devops&tabs=yaml#task-versions).
 
 ### 3. Proxy Configuration
 

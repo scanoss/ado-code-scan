@@ -39,7 +39,7 @@ steps:
 - checkout: self
   persistCredentials: true
   
-- task: scanoss@0
+- task: scanoss@1
   displayName: "SCANOSS Code Scan"
   inputs:
     apiKey: $(APIKEY)

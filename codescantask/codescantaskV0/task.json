@@ -1,0 +1,182 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "47b73d03-9851-4cb1-be3d-b3a853e71d33",
+  "name": "SCANOSS",
+  "friendlyName": "SCANOSS CODE SCAN",
+  "description": "scan source code",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "SCANOSS",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 5
+  },
+  "inputs": [
+    {
+      "name": "dependenciesEnabled",
+      "type": "boolean",
+      "label": "Dependencies Enabled",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether dependencies are enabled."
+    },
+    {
+      "name": "dependenciesScope",
+      "type": "string",
+      "label": "Gets development or production dependencies (scopes - prod|dev).",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Gets development or production dependencies (scopes - prod|dev)."
+    },
+    {
+      "name": "dependenciesScopeInclude",
+      "type": "string",
+      "label": "Custom list of dependency scopes to be included. Provide scopes as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom list of dependency scopes to be included. Provide scopes as a comma-separated list."
+    },
+    {
+      "name": "dependenciesScopeExclude",
+      "type": "string",
+      "label": "Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom list of dependency scopes to be excluded. Provide scopes as a comma-separated list."
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "label": "API Key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the API key."
+    },
+    {
+      "name": "apiUrl",
+      "type": "string",
+      "label": "API URL",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the API URL."
+    },
+    {
+      "name": "sbomEnabled",
+      "type": "boolean",
+      "label": "SBOM Enabled",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether SBOM is enabled."
+    },
+    {
+      "name": "sbomFilepath",
+      "type": "string",
+      "label": "SBOM Filepath",
+      "defaultValue": "sbom.json",
+      "required": false,
+      "helpMarkDown": "Specify the SBOM filepath."
+    },
+    {
+      "name": "sbomType",
+      "type": "string",
+      "label": "SBOM Type",
+      "defaultValue": "identify",
+      "required": false,
+      "helpMarkDown": "Specify the SBOM type."
+    },
+    {
+      "name": "policies",
+      "type": "string",
+      "label": "policies",
+      "defaultValue": "copyleft",
+      "required": true,
+      "helpMarkDown": "Specify policies to be analyzed."
+    },
+    {
+      "name": "policiesHaltOnFailure",
+      "type": "boolean",
+      "label": "Policies Halt on Failure",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Halt check on policy failure. If set to false checks will not fail."
+    },
+    {
+      "name": "runtimeContainer",
+      "type": "string",
+      "label": "Runtime container",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.20.4",
+      "required": false,
+      "helpMarkDown": "Specify runtime container to perform the scan."
+    },
+    {
+      "name": "outputFilepath",
+      "type": "string",
+      "label": "Output File Path",
+      "defaultValue": "results.json",
+      "required": false,
+      "helpMarkDown": "Scan output file name."
+    },
+    {
+      "name": "licensesCopyleftInclude",
+      "type": "string",
+      "label": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list."
+    },
+    {
+      "name": "licensesCopyleftExclude",
+      "type": "string",
+      "label": "List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list."
+    },
+    {
+      "name": "licensesCopyleftExplicit",
+      "type": "string",
+      "label": "Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list."
+    },
+    {
+      "name": "skipSnippets",
+      "type": "boolean",
+      "label": "Skip the generation of snippets.",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Skip the generation of snippets"
+    },
+    {
+      "name": "scanFiles",
+      "type": "boolean",
+      "label": "Enable or disable file and snippet scanning.",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Enable or disable file and snippet scanning."
+    },
+    {
+      "name": "scanossSettings",
+      "type": "boolean",
+      "label": " Settings file to use for scanning.",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": " Settings file to use for scanning."
+    },
+    {
+      "name": "settingsFilepath",
+      "type": "string",
+      "label": "SCANOSS settings file path.",
+      "defaultValue": "scanoss.json",
+      "required": false,
+      "helpMarkDown": "SCANOSS settings file path."
+    }
+  ],
+  "execution": {
+    "Node16": {
+      "target": "index.js"
+    }
+  }
+}
