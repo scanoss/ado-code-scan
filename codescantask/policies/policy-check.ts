@@ -78,13 +78,15 @@ export abstract class PolicyCheck {
     protected async updatePRStatus(state: PR_STATUS, description: string){
         if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
-            if (!this.accessToken || !this.orgUrl || !this.project || !this.repositoryId || !this.pullRequestId) {
+            const commitId = tl.getVariable('System.PullRequest.SourceCommitId');
+
+            if (!this.accessToken || !this.orgUrl || !this.project || !this.repositoryId || !commitId) {
                 tl.setResult(tl.TaskResult.SucceededWithIssues, `Missing necessary environment variables.\n
                         Access Token: ${this.accessToken}\n
                         Organization url: ${this.orgUrl}\n
                         Project: ${this.project}\n
                         Repository ID: ${this.repositoryId}\n
-                        Pull request id: ${this.repositoryId}
+                        Commit ID: ${commitId}
                 `);
                 return;
             }
@@ -98,8 +100,8 @@ export abstract class PolicyCheck {
                 },
             };
 
-            // Post the status to the PR
-            const apiUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/statuses?api-version=6.0-preview.1`;
+            // Post the status to the commit
+            const apiUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/commits/${commitId}/statuses?api-version=7.1`;
             await axios.post(apiUrl, status, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,7 +109,7 @@ export abstract class PolicyCheck {
                 }
             });
         } catch (err:any) {
-            tl.setResult(tl.TaskResult.SucceededWithIssues, `Failed to add status to PR: ${err.message}`);
+            tl.setResult(tl.TaskResult.SucceededWithIssues, `Failed to add status to commit: ${err.message}`);
        }
     }
 
@@ -156,7 +158,7 @@ export abstract class PolicyCheck {
         }
     }
 
-    protected async addCommentToPR(title: string, content: string) {
+    protected async addCommentToPR(title: string, content: string, threadStatus: string = 'pending') {
         if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
             // Delete previous comments for this check type
@@ -170,7 +172,8 @@ export abstract class PolicyCheck {
                 comments: [{
                     parentCommentId: 0,
                     content: `##${scanossMarker}\n\n${content}`
-                }]
+                }],
+                status: threadStatus  // Set thread status: active, pending, fixed, wontFix, closed, byDesign, unknown
             };
 
             const response = await axios.post(apiUrl, payload, {
@@ -181,6 +184,21 @@ export abstract class PolicyCheck {
             });
 
             tl.debug(`Comment added successfully: ${response.data}`);
+
+            // Update the thread status using PATCH endpoint
+            const threadId = response.data.id;
+            if (threadId) {
+                const patchUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads/${threadId}?api-version=7.1`;
+                await axios.patch(patchUrl, {
+                    status: threadStatus
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.accessToken}`
+                    }
+                });
+                tl.debug(`Thread ${threadId} status updated to: ${threadStatus}`);
+            }
         } catch (error: any) {
             tl.error('Failed to add comment:', error.response.data);
         }
