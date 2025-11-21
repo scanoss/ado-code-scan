@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set default thread PR comment status to `active`
 ### Fixed
 - Fixed repeated comments for policy checks
+- Fixed SCANOSS task version in documentation 
 
 ## [1.2.0] - 2025-11-7
 ### Added
