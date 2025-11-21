@@ -4,7 +4,7 @@ The SCANOSS Code Scan task enhances your software development process by automat
 # Usage
 
 ### Installation Instructions
-To install the SCANOSS Code Scan task, please consult the Visual Studio Marketplace guide [here](INSERT_LINK_TO_AZURE_MARKETPLACE_DEV_OPS).  
+To install the SCANOSS Code Scan task, please consult the Visual Studio Marketplace guide [here](https://marketplace.visualstudio.com/items?itemName=SCANOSS.scanoss-code-scan).  
 
 ### Detailed Information
 For more detailed usage instructions, please refer to the [OVERVIEW.md](OVERVIEW.md) document.
