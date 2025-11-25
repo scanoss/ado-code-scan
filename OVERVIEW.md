@@ -54,7 +54,8 @@ Open the repository settings section:
 A) Allow Pull Request Contribute Access:
   1. Open the 'Security' tab.
   2. Select the repository Build Service account under the 'Users' group.
-  3. Allow "Contribute to pull requests".
+  3. Set the `Contribute to pull requests` and `Contribute" permissions` to `Allow`.
+
 
 ![Ado-setup-pull-request-contribution-access](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-setup-2.png?raw=true)
 
