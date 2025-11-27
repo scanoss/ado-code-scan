@@ -56,8 +56,17 @@ A) Allow Pull Request Contribute Access:
   2. Select the repository Build Service account under the 'Users' group.
   3. Set the `Contribute to pull requests` and `Contribute" permissions` to `Allow`.
 
-
 ![Ado-setup-pull-request-contribution-access](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-setup-2.png?raw=true)
+
+**Personal Access Token (PAT) Configuration**
+
+A Personal Access Token (PAT) is **only required** when the setting `Limit job authorization scope to current project for non-release pipelines` is set to **OFF** (as shown below). If this setting is **ON**, no PAT is needed.
+
+![Ado-setup-limit-job-authorization](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-setup-4.png?raw=true)
+
+
+Create a PAT with the following minimum permissions:
+![ADO-PAT-permissions](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/ADO-PAT-permissions.png?raw=true)
 
 
 B) Add Build Validation Policy to the integration branch:
@@ -169,6 +178,7 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | scanossSettings          | Settings file to use for scanning. See the SCANOSS settings [documentation](https://scanoss.readthedocs.io/projects/scanoss-py/en/latest/#settings-file) | Optional       | `true`                               |
 | settingsFilepath         | Filepath of the SCANOSS settings to be used for scanning                                                                                                 | Optional       | `scanoss.json`                       |
 | debug                    | Enable debugging                                                                                                                                         | Optional       | `false`                              |
+| adoPat                   | ADO Personal Access Token                                                                                                                                | Optional       | -                                    |
 
 ## Policy Checks
 The SCANOSS Code Scan Task includes three configurable policies:

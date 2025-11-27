@@ -22,7 +22,7 @@
  */
 
 import * as tl from 'azure-pipelines-task-lib';
-import { POLICIES_HALT_ON_FAILURE } from '../app.input';
+import {PAT, POLICIES_HALT_ON_FAILURE } from '../app.input';
 import axios from 'axios';
 import path from 'path';
 import fs from 'fs';
@@ -43,7 +43,7 @@ export abstract class PolicyCheck {
     private readonly buildReason: string | undefined;
     constructor(checkName: string) {
         this.checkName = checkName;
-        this.accessToken = tl.getVariable('System.AccessToken');
+        this.accessToken = PAT ? PAT : tl.getVariable('System.AccessToken');
         this.orgUrl = tl.getVariable('System.TeamFoundationCollectionUri') || '';
         this.project = tl.getVariable('System.TeamProjectId') || '';
         this.repositoryId = tl.getVariable('Build.Repository.Id') || '';

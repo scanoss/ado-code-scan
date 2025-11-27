@@ -9,8 +9,8 @@
   "author": "SCANOSS",
   "version": {
     "Major": 1,
-    "Minor": 3,
-    "Patch": 1
+    "Minor": 4,
+    "Patch": 0
   },
   "instanceNameFormat": "SCANOSS Code Scan",
   "inputs": [
@@ -205,6 +205,14 @@
       "defaultValue": false,
       "required": false,
       "helpMarkDown": "Enable runtime container debugging"
+    },
+    {
+      "name": "adoPat",
+      "type": "string",
+      "label": "ADO Personal Access token",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "ADO Personal Access token"
     }
   ],
   "execution": {
