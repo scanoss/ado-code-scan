@@ -21,7 +21,7 @@
    THE SOFTWARE.
  */
 
-import { PolicyCheck } from './policy-check';
+import {PolicyCheck} from './policy-check';
 import {DEBUG, EXECUTABLE, OUTPUT_FILEPATH, REPO_DIR, RUNTIME_CONTAINER, SCANOSS_SETTINGS} from '../app.input';
 import * as tl from 'azure-pipelines-task-lib';
 import * as fs from 'fs';
@@ -76,7 +76,9 @@ export class UndeclaredPolicyCheck extends PolicyCheck {
         const results = tl.execSync(EXECUTABLE, args);
 
         if (results.code === 0) {
-            await this.success('### :white_check_mark: Policy Pass \n #### Not undeclared components were found', undefined);
+            tl.debug('No undeclared components were found');
+            await this.success('### :white_check_mark: Policy Pass \n #### No undeclared components were found', undefined);
+            await this.resolvePolicyThreads();
             return;
         }
 

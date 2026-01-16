@@ -33,6 +33,19 @@ export enum PR_STATUS {
     pending = 'pending',
 }
 
+/**
+ * @See: https://learn.microsoft.com/en-us/rest/api/azure/devops/git/pull-request-threads/update?view=azure-devops-rest-7.1#commentthreadstatus
+ * */
+export enum THREAD_STATUS {
+    active = 'active',
+    pending = 'pending',
+    fixed = 'fixed',
+    wontFix = 'wontFix',
+    closed = 'closed',
+    byDesign = 'byDesign',
+    unknown = 'unknown'
+}
+
 export abstract class PolicyCheck {
     protected checkName: string;
     private readonly accessToken: string | undefined;
@@ -72,7 +85,6 @@ export abstract class PolicyCheck {
         if (text) {
             await this.addCommentToPR(`${this.checkName} Results`, text);
         }
-
     }
 
     protected async updatePRStatus(state: PR_STATUS, description: string){
@@ -113,23 +125,31 @@ export abstract class PolicyCheck {
        }
     }
 
+    protected async getPreviousThreads(): Promise<any[]> {
+        if (this.buildReason && this.buildReason !== 'PullRequest') return [];
+            try {
+                const apiUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads?api-version=6.0`;
+                const response = await axios.get(apiUrl, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.accessToken}`
+                    }
+                });
+                return response.data.value || [];
+            }
+            catch (error: any) {
+                tl.error(`Failed to get previous threads: ${error.message}`);
+                return [];
+            }
+    }
+
     /**
      * Deletes existing SCANOSS comments for this check type from the PR
      * Identifies comments by the SCANOSS marker and check name in the content
      */
     private async deletePreviousComments(title: string):Promise<void> {
-        if (this.buildReason && this.buildReason !== 'PullRequest') return;
-        try {
-            const apiUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads?api-version=6.0`;
-
-            const response = await axios.get(apiUrl, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.accessToken}`
-                }
-            });
-
-            const threads = response.data.value || [];
+        try{
+            const threads = await this.getPreviousThreads();
             const scanossMarker = `SCANOSS - ${title}`;
             tl.debug(`Looking for threads with marker: ${scanossMarker}`);
             for (const thread of threads) {
@@ -158,7 +178,7 @@ export abstract class PolicyCheck {
         }
     }
 
-    protected async addCommentToPR(title: string, content: string, threadStatus: string = 'pending') {
+    protected async addCommentToPR(title: string, content: string, threadStatus: THREAD_STATUS = THREAD_STATUS.pending) {
         if (this.buildReason && this.buildReason !== 'PullRequest') return;
         try {
             // Delete previous comments for this check type
@@ -188,15 +208,7 @@ export abstract class PolicyCheck {
             // Update the thread status using PATCH endpoint
             const threadId = response.data.id;
             if (threadId) {
-                const patchUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads/${threadId}?api-version=7.1`;
-                await axios.patch(patchUrl, {
-                    status: threadStatus
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${this.accessToken}`
-                    }
-                });
+                await this.updateThreadStatus(threadId, threadStatus);
                 tl.debug(`Thread ${threadId} status updated to: ${threadStatus}`);
             }
         } catch (error: any) {
@@ -216,5 +228,50 @@ export abstract class PolicyCheck {
 
     tl.command('artifact.upload', { artifactname: artifactName }, tempFilePath);
     }
- 
+
+    /**
+     * Updates the status of a pull request thread.
+     *
+     * @param threadId - The ID of the thread to update
+     * @param threadStatus - The new status to set (e.g., closed, active)
+     * @see https://learn.microsoft.com/en-us/rest/api/azure/devops/git/pull-request-threads/update?view=azure-devops-rest-7.1
+     */
+    protected async updateThreadStatus(threadId: string, threadStatus: THREAD_STATUS) {
+        const patchUrl = `${this.orgUrl}${this.project}/_apis/git/repositories/${this.repositoryId}/pullRequests/${this.pullRequestId}/threads/${threadId}?api-version=7.1`;
+        await axios.patch(patchUrl, {
+            status: threadStatus
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        });
+        tl.debug(`Thread ${threadId} status updated to: ${threadStatus}`);
+    }
+
+    /**
+     * Resolve previous SCANOSS policy threads when the policy check passes.
+     *
+     * Searches through all PR threads for comments containing the SCANOSS marker
+     * for this check type. When found, marks the thread as fixed to indicate the
+     * policy violation has been resolved.
+     */
+    protected async resolvePolicyThreads(): Promise<void> {
+        const threads = await this.getPreviousThreads();
+        const scanossMarker = `SCANOSS - ${this.checkName}`;
+        for (const thread of threads) {
+            if (thread.comments && thread.comments.length > 0) {
+                for (const comment of thread.comments) {
+                    if (comment.content && comment.content.includes(scanossMarker)) {
+                        try {
+                            await this.updateThreadStatus(thread.id, THREAD_STATUS.fixed);
+                        } catch (error: any) {
+                            tl.warning(`Failed to resolve thread ${thread.id}: ${error.message}`);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }

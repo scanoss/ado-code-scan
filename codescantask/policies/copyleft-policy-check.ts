@@ -98,7 +98,8 @@ export class CopyleftPolicyCheck extends PolicyCheck {
         const results = tl.execSync(EXECUTABLE, args);
 
         if (results.code === 0) {
-            await this.success('### :white_check_mark: Policy Pass \n #### Not copyleft Licenses were found', undefined);
+            await this.success('### :white_check_mark: Policy Pass \n #### No copyleft licenses were found', undefined);
+            await this.resolvePolicyThreads();
             return;
         }
 

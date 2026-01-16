@@ -184,7 +184,7 @@ describe('CopyleftPolicyCheck', () => {
         assert(summary !== undefined, 'Summary should not be undefined');
         // Add your assertions here
         assert.equal(sanitize(summary),sanitize(`### :white_check_mark: Policy Pass 
-        #### Not copyleft Licenses were found`));
+        #### No copyleft licenses were found`));
     });
 
     it('Copyleft policy explicit licenses', async function () {
