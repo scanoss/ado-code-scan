@@ -256,6 +256,7 @@ export class DepTrackPolicyCheck extends PolicyCheck {
                     successMessage += this.getUploadConfigurationHelp();
                 }
                 await this.success(successMessage, undefined);
+                await this.resolvePolicyThreads();
                 return;
             }
             if (results.code === 1) {

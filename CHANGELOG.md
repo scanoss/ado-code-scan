@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-01-19
+### Added
+- Mark policy threads as fixed when policy checks pass (copyleft, undeclared, and dependency track)
+
 ## [1.4.0] - 2025-11-27
 ### Changed
 - Updated security permission documentation
@@ -40,3 +44,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.2.0]: https://github.com/scanoss/ado-code-scan/compare/v1.1.0...v1.2.0
 [1.3.0]: https://github.com/scanoss/ado-code-scan/compare/v1.2.0...v1.3.0
 [1.4.0]: https://github.com/scanoss/ado-code-scan/compare/v1.3.0...v1.4.0
+[1.5.0]: https://github.com/scanoss/ado-code-scan/compare/v1.4.0...v1.5.0

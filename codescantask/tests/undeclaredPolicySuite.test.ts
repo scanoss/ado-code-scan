@@ -145,7 +145,7 @@ describe('Undeclared Policy Check Suite', () => {
         assert(summary !== undefined, 'Summary should not be undefined');
 
         assert.equal(sanitize(summary),sanitize(`### :white_check_mark: Policy Pass 
-        #### Not undeclared components were found`));
+        #### No undeclared components were found`));
     });
     
     it("should add '--debug' flag to build arguments when DEBUG is enabled", function() {
