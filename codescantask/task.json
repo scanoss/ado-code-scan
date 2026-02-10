@@ -9,7 +9,7 @@
   "author": "SCANOSS",
   "version": {
     "Major": 1,
-    "Minor": 5,
+    "Minor": 6,
     "Patch": 0
   },
   "instanceNameFormat": "SCANOSS Code Scan",
@@ -82,7 +82,7 @@
       "name": "runtimeContainer",
       "type": "string",
       "label": "Runtime container",
-      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.40.1",
+      "defaultValue": "ghcr.io/scanoss/scanoss-py:v1.45.0",
       "required": false,
       "helpMarkDown": "Specify runtime container to perform the scan."
     },

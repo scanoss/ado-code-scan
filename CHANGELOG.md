@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-02-10
+### Added
+- Added support for scan tuning parameters
+### Changed
+- Upgraded scanoss-py version to v1.45.0
+
 ## [1.5.0] - 2026-01-19
 ### Added
 - Mark policy threads as fixed when policy checks pass (copyleft, undeclared, and dependency track)
@@ -45,3 +51,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.3.0]: https://github.com/scanoss/ado-code-scan/compare/v1.2.0...v1.3.0
 [1.4.0]: https://github.com/scanoss/ado-code-scan/compare/v1.3.0...v1.4.0
 [1.5.0]: https://github.com/scanoss/ado-code-scan/compare/v1.4.0...v1.5.0
+[1.6.0]: https://github.com/scanoss/ado-code-scan/compare/v1.5.0...v1.6.0
