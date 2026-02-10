@@ -169,7 +169,7 @@ When the pipeline is manually triggered or runs on a schedule, the results are u
 | depTrackProjectVersion   | Dependency Track project version (required if projectId not provided).                                                                                   | Optional       | -                                    |
 | apiUrl                   | SCANOSS API URL                                                                                                                                          | Optional       | `https://api.osskb.org/scan/direct`  |
 | apiKey                   | SCANOSS API Key                                                                                                                                          | Optional       | -                                    |
-| runtimeContainer         | Runtime URL                                                                                                                                              | Optional       | `ghcr.io/scanoss/scanoss-py:v1.37.1` |
+| runtimeContainer         | Runtime URL                                                                                                                                              | Optional       | `ghcr.io/scanoss/scanoss-py:v1.45.0` |
 | licensesCopyleftInclude  | List of Copyleft licenses to append to the default list. Provide licenses as a comma-separated list.                                                     | Optional       | -                                    |
 | licensesCopyleftExclude  | List of Copyleft licenses to remove from default list. Provide licenses as a comma-separated list.                                                       | Optional       | -                                    |
 | licensesCopyleftExplicit | Explicit list of Copyleft licenses to consider. Provide licenses as a comma-separated list.                                                              | Optional       | -                                    |
@@ -213,6 +213,12 @@ Additionally, if it is a Pull Request, a comment with a summary of the report wi
 
 
 ![Comments on PR Copyleft licenses](https://github.com/scanoss/integration-azure-DevOps/blob/main/.github/assets/pr_comment_copyleft.png?raw=true)
+
+## Scan Tuning Parameters
+
+The SCANOSS scan engine supports [scan tuning parameters](https://github.com/scanoss/scanoss.py/blob/main/docs/source/scanoss_settings_schema.rst#scan-tuning-parameters) for snippet matching.
+
+> **Important:** Scan tuning parameters must be configured through the `scanoss.json`. They are **not** configured as SCANOSS ADO input parameters.
 
 ## Dependency Track Integration
 
