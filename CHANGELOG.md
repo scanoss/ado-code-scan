@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.0] - 2026-03-01
 ### Added
 - Added `scanPath` input to configure a relative path within the repository as the scan root (e.g., `src` or `packages/api`). Defaults to `.` (repository root).
+### Changed
+- Upgraded scanoss-py version to v1.46.0
 
 ## [1.6.0] - 2026-02-10
 ### Added
