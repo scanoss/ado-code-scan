@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.7.0] - 2026-03-01
+## [1.7.0] - 2026-03-05
 ### Added
 - Added `scanPath` input to configure a relative path within the repository as the scan root (e.g., `src` or `packages/api`). Defaults to `.` (repository root).
 ### Changed
@@ -58,3 +58,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.4.0]: https://github.com/scanoss/ado-code-scan/compare/v1.3.0...v1.4.0
 [1.5.0]: https://github.com/scanoss/ado-code-scan/compare/v1.4.0...v1.5.0
 [1.6.0]: https://github.com/scanoss/ado-code-scan/compare/v1.5.0...v1.6.0
+[1.7.0]: https://github.com/scanoss/ado-code-scan/compare/v1.6.0...v1.7.0
