@@ -29,7 +29,7 @@ import {
     DEPENDENCIES_ENABLED, DEPENDENCIES_SCOPE, DEPENDENCY_SCOPE_EXCLUDE, DEPENDENCY_SCOPE_INCLUDE, EXECUTABLE,
     OUTPUT_FILEPATH,
     REPO_DIR, RUNTIME_CONTAINER,
-    SCAN_FILES, SCANOSS_SETTINGS, SETTINGS_FILE_PATH, SKIP_SNIPPETS
+    SCAN_FILES, SCAN_PATH, SCANOSS_SETTINGS, SETTINGS_FILE_PATH, SKIP_SNIPPETS
 } from '../app.input';
 import { ScannerResults } from './result.interface';
 import path from 'path';
@@ -297,7 +297,7 @@ export class ScanService {
      */
     private async buildArgs(): Promise<Array<string>> {
         return ['run','-v',`${this.options.inputFilepath}:/scanoss`,
-            this.options.runtimeContainer, 'scan', '.', '--output', `./${OUTPUT_FILEPATH}`,
+            this.options.runtimeContainer, 'scan', SCAN_PATH, '--output', `./${OUTPUT_FILEPATH}`,
             ...this.buildDependenciesArgs(),
             ...await this.detectSBOM(),
             ...this.buildSnippetArgs(),

@@ -199,6 +199,14 @@
       "helpMarkDown": "Project version (required if using project name)"
     },
     {
+      "name": "scanPath",
+      "type": "string",
+      "label": "Relative path within the repository to scan (e.g., \"src\" or \"packages/api\"). Must be relative, no parent directory references (..) allowed.",
+      "defaultValue": ".",
+      "required": false,
+      "helpMarkDown": "Relative path within the repository to scan (e.g., \"src\" or \"packages/api\"). Must be relative, no parent directory references (..) allowed."
+    },
+    {
       "name": "debug",
       "type": "boolean",
       "label": "Enable runtime container debugging",

@@ -22,6 +22,9 @@
  */
 
 import tl = require('azure-pipelines-task-lib/task');
+import { validateScanPath } from './utils/path.utils';
+
+export const SCAN_PATH = validateScanPath(tl.getInput('scanPath'));
 export const DEPENDENCIES_ENABLED = tl.getInput('dependenciesEnabled') === 'true';
 export const DEPENDENCIES_SCOPE = tl.getInput('dependenciesScope');
 export const DEPENDENCY_SCOPE_EXCLUDE = tl.getInput('dependenciesScopeExclude');
